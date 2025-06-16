@@ -432,11 +432,21 @@
             box-shadow: 0 12px 35px rgba(212, 175, 55, 0.6);
         }
 
+        .play-button:not(:disabled) {
+            animation: diceGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes diceGlow {
+            0%, 100% { box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); }
+            50% { box-shadow: 0 12px 35px rgba(212, 175, 55, 0.7); }
+        }
+
         .play-button:disabled {
             opacity: 0.7;
             cursor: not-allowed;
             transform: none !important;
             box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+            animation: none;
         }
 
         .action-buttons {
@@ -553,78 +563,121 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
-        .question-display {
-            background: rgba(212, 175, 55, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
+        /* Question Modal Overlay */
+        .question-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 996;
             display: none;
-            animation: slideUp 0.5s ease-out;
-            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .question-overlay.show {
+            display: block;
+        }
+
+        .question-display {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 400px;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 30px 25px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.4);
+            display: none;
+            animation: questionPop 0.5s ease-out;
+            z-index: 997;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes questionPop {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
 
         .question-display.show {
             display: block;
         }
 
-        .question-display::after {
+        .question-display::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(212, 175, 55, 0.05), transparent);
-            animation: rotate 8s linear infinite;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--gold), transparent, var(--gold));
+            border-radius: 25px;
+            opacity: 0.3;
             z-index: -1;
+            animation: shimmerBorder 3s linear infinite;
         }
 
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @keyframes shimmerBorder {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .question-title {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
+            font-size: 1.8rem;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
             color: var(--gold);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 3px 6px rgba(0,0,0,0.7);
+            letter-spacing: 1px;
         }
 
         .question-text {
-            font-size: 1.1rem;
-            line-height: 1.4;
+            font-size: 1.3rem;
+            line-height: 1.5;
             text-align: center;
             font-style: italic;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            color: var(--cream);
+            padding: 0 10px;
         }
 
         .question-intensity {
             display: inline-block;
             background: var(--gold);
             color: var(--black);
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
         }
 
         .question-actions {
-            margin-top: 25px;
+            margin-top: 30px;
             animation: fadeInUp 0.5s ease-out 0.3s both;
         }
 
         .answer-buttons {
             display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 20px;
+            margin-bottom: 25px;
             justify-content: center;
         }
 
@@ -753,8 +806,8 @@
 
         .question-result {
             text-align: center;
-            padding: 20px;
-            margin-top: 15px;
+            padding: 25px;
+            margin-top: 20px;
             border-radius: 15px;
             animation: resultSlide 0.6s ease-out;
         }
@@ -1052,6 +1105,12 @@
             .play-button-text {
                 font-size: 0.8rem;
             }
+
+            .question-display {
+                width: 95%;
+                padding: 20px;
+                max-height: 85vh;
+            }
         }
 
         @media (max-width: 360px) {
@@ -1079,6 +1138,18 @@
 
             .play-button-text {
                 font-size: 0.7rem;
+            }
+
+            .question-display {
+                padding: 20px 15px;
+            }
+
+            .question-title {
+                font-size: 1.5rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
             }
         }
 
@@ -1237,48 +1308,36 @@
                 </div>
             </div>
 
-            <div class="question-display" id="questionDisplay">
-                <div class="question-title">Will You Ever...</div>
-                <div class="question-text" id="questionText"></div>
-                <div style="text-align: center; margin-top: 15px;">
-                    <span class="question-intensity" id="questionIntensity"></span>
-                </div>
-                
-                <div class="question-actions" id="questionActions">
-                    <div class="answer-buttons">
-                        <button class="answer-btn yes-btn" onclick="answerQuestion('yes')">
-                            <span class="answer-emoji">💋</span>
-                            <span class="answer-text">Hell Yes!</span>
-                        </button>
-                        <button class="answer-btn no-btn" onclick="answerQuestion('no')">
-                            <span class="answer-emoji">😈</span>
-                            <span class="answer-text">Not Tonight</span>
-                        </button>
-                    </div>
-                    
-                    <button class="random-choice-btn" id="fateDecideBtn" onclick="letFateDecide()">
-                        <span class="random-emoji">🎲</span>
-                        <span class="random-text">Let Fate Decide</span>
-                    </button>
-                </div>
-                
-                <div class="question-result" id="questionResult" style="display: none;">
-                    <div class="result-icon" id="resultIcon"></div>
-                    <div class="result-message" id="resultMessage"></div>
-                </div>
-            </div>
+    <!-- Question Display Modal -->
+    <div class="question-overlay" id="questionOverlay"></div>
+    <div class="question-display" id="questionDisplay">
+        <div class="question-title">Will You Ever...</div>
+        <div class="question-text" id="questionText"></div>
+        <div style="text-align: center; margin-top: 15px;">
+            <span class="question-intensity" id="questionIntensity"></span>
         </div>
-
-        <div class="settings-section">
-            <h3 class="settings-title-main">Settings</h3>
-            
-            <div class="player-names-main">
-                <input type="text" class="player-input-main" id="player1Name" placeholder="Player 1 Name" maxlength="20">
-                <input type="text" class="player-input-main" id="player2Name" placeholder="Player 2 Name" maxlength="20">
+        
+        <div class="question-actions" id="questionActions">
+            <div class="answer-buttons">
+                <button class="answer-btn yes-btn" onclick="answerQuestion('yes')">
+                    <span class="answer-emoji">💋</span>
+                    <span class="answer-text">Hell Yes!</span>
+                </button>
+                <button class="answer-btn no-btn" onclick="answerQuestion('no')">
+                    <span class="answer-emoji">😈</span>
+                    <span class="answer-text">Not Tonight</span>
+                </button>
             </div>
             
-            <button class="submit-btn" onclick="updatePlayerNames()">Update Names</button>
-            <button class="settings-btn" onclick="showSettings()" style="margin-left: 15px;">Change Game Settings</button>
+            <button class="random-choice-btn" id="fateDecideBtn" onclick="letFateDecide()">
+                <span class="random-emoji">🎲</span>
+                <span class="random-text">Let Fate Decide</span>
+            </button>
+        </div>
+        
+        <div class="question-result" id="questionResult" style="display: none;">
+            <div class="result-icon" id="resultIcon"></div>
+            <div class="result-message" id="resultMessage"></div>
         </div>
     </div>
 
@@ -1455,7 +1514,13 @@
             buttons.forEach(btn => actionElements.push(btn));
         }
 
-        // SPINNING WHEEL FUNCTIONALITY
+        // SPINNING WHEEL FUNCTIONALITY WITH WEIGHTED PROBABILITIES
+        // The dice is weighted to land on different actions with these chances:
+        // - Will You Ever: 50% of the time (1 in 2)
+        // - Take a Sip: 20% of the time (1 in 5)
+        // - Remove Clothing: 12.5% of the time (1 in 8)
+        // - Take a Shot: 10% of the time (1 in 10)
+        // (Percentages normalized to total 100%)
         function startSpinning() {
             if (spinningState.isSpinning || gameState.actionTaken) {
                 return;
@@ -1515,9 +1580,8 @@
             // Remove all highlights
             actionElements.forEach(btn => btn.classList.remove('highlighted'));
             
-            // Select the final button (go back one since we incremented)
-            const finalIndex = (spinningState.currentHighlight - 1 + actionElements.length) % actionElements.length;
-            const selectedButton = actionElements[finalIndex];
+            // Use weighted random selection instead of the spinning position
+            const selectedButton = getWeightedRandomAction();
             
             // Add selected class with animation
             selectedButton.classList.add('selected');
@@ -1537,6 +1601,59 @@
             }, 2000);
         }
 
+        function getWeightedRandomAction() {
+            // Define weights based on user requirements:
+            // Remove Clothing: 1 in 8 chance (12.5%)
+            // Take a Shot: 1 in 10 chance (10%)
+            // Take a Sip: 1 in 5 chance (20%)
+            // Will You Ever: 1 in 2 chance (50%)
+            // Note: These don't sum to 100%, so they're normalized below
+            
+            const weights = {
+                'Remove Clothing': 0.125,  // 1/8
+                'Take a Shot': 0.10,       // 1/10
+                'Take a Sip': 0.20,        // 1/5
+                'Question': 0.50           // 1/2 (Will You Ever)
+            };
+            
+            // Normalize weights to ensure they sum to 1
+            const totalWeight = Object.values(weights).reduce((a, b) => a + b, 0);
+            const normalizedWeights = {};
+            for (const [action, weight] of Object.entries(weights)) {
+                normalizedWeights[action] = weight / totalWeight;
+            }
+            
+            // Create cumulative weights
+            const actions = [];
+            const cumulativeWeights = [];
+            let cumSum = 0;
+            
+            for (const [action, weight] of Object.entries(normalizedWeights)) {
+                actions.push(action);
+                cumSum += weight;
+                cumulativeWeights.push(cumSum);
+            }
+            
+            // Generate random number and find corresponding action
+            const random = Math.random();
+            let selectedAction = actions[0];
+            
+            for (let i = 0; i < cumulativeWeights.length; i++) {
+                if (random <= cumulativeWeights[i]) {
+                    selectedAction = actions[i];
+                    break;
+                }
+            }
+            
+            // Find and return the button element with this action
+            const selectedButton = Array.from(actionElements).find(btn => btn.dataset.action === selectedAction);
+            
+            // Log for debugging (can be removed in production)
+            console.log(`Weighted selection: ${selectedAction} (${(normalizedWeights[selectedAction] * 100).toFixed(1)}% chance)`);
+            
+            return selectedButton;
+        }
+
         function executeSelectedAction(action, buttonElement) {
             // Remove selected class and add shrinking
             buttonElement.classList.remove('selected');
@@ -1554,6 +1671,7 @@
                 
                 document.getElementById('questionText').textContent = question;
                 document.getElementById('questionIntensity').textContent = levels[gameState.spiceLevel];
+                document.getElementById('questionOverlay').classList.add('show');
                 document.getElementById('questionDisplay').classList.add('show');
                 
                 // Show the question actions
@@ -1646,7 +1764,7 @@
                 showSettings();
             } else {
                 updateDisplay();
-                showNotification(`Welcome ${player1} and ${player2}! Press Let's Play to start!`);
+                showNotification(`Welcome ${player1} and ${player2}! Press Let's Play to spin the dice!`);
             }
             
             saveGameState();
@@ -1761,6 +1879,7 @@
             document.getElementById('player2Name').value = gameState.player2Name;
             
             // Hide any open question displays
+            document.getElementById('questionOverlay').classList.remove('show');
             document.getElementById('questionDisplay').classList.remove('show');
             
             updateCurrentSettingsDisplay();
@@ -1946,7 +2065,7 @@
             
             // Update display
             updateDisplay();
-            showNotification(`${gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name}'s turn! Press Let's Play!`);
+            showNotification(`${gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name}'s turn! Press Let's Play to spin!`);
             
             // Save state
             saveGameState();

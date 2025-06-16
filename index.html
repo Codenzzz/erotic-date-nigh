@@ -906,9 +906,11 @@
         .settings-modal {
             background: linear-gradient(135deg, var(--dark-grey), var(--medium-grey));
             border-radius: 25px;
-            padding: 30px;
-            max-width: 400px;
-            width: 100%;
+            padding: 20px;
+            max-width: 380px;
+            width: 95%;
+            max-height: 85vh;
+            overflow-y: auto;
             border: 2px solid var(--gold);
             box-shadow: var(--shadow-deep);
             animation: slideUp 0.5s ease-out;
@@ -916,30 +918,30 @@
 
         .settings-title {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
+            font-size: 1.6rem;
             color: var(--gold);
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .spice-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .spice-level {
             border: 2px solid transparent;
             border-radius: 15px;
-            padding: 15px;
+            padding: 12px;
             color: white;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             position: relative;
             overflow: hidden;
         }

@@ -465,11 +465,7 @@
             document.getElementById('player1Name').value = gameState.player1Name;
             document.getElementById('player2Name').value = gameState.player2Name;
             
-            // Reset action state
-            gameState.actionTaken = false;
-            gameState.questionAnswered = false;
-            gameState.currentQuestion = '';
-            gameState.questionAnswer = '';
+            // Hide any open question displays
             document.getElementById('questionDisplay').classList.remove('show');
             
             updateCurrentSettingsDisplay();

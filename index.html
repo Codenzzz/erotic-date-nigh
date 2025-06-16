@@ -1,10 +1,635 @@
-<!DOCTYPE html>
+</style>
+</head>
+<body>
+    <!-- Settings Overlay -->
+    <div class="settings-overlay" id="settingsOverlay">
+        <div class="settings-modal">
+            <h2 class="settings-title">Choose Your Experience</h2>
+            
+            <div class="spice-selector">
+                <div class="spice-level romantic" data-level="1" onclick="selectSpiceLevel(1)">
+                    <div>😊 Romantic</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Sensual & Sweet</div>
+                </div>
+                <div class="spice-level spicy selected" data-level="2" onclick="selectSpiceLevel(2)">
+                    <div>🔥 Spicy</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Passionate & Bold</div>
+                </div>
+                <div class="spice-level intense" data-level="3" onclick="selectSpiceLevel(3)">
+                    <div>🌶️ Intense</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Kinky & Explicit</div>
+                </div>
+                <div class="spice-level extreme" data-level="4" onclick="selectSpiceLevel(4)">
+                    <div>🔥🔥 Extreme</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">No Limits</div>
+                </div>
+            </div>
+            
+            <div class="exclusions-section">
+                <div class="exclusions-title">Exclude These Topics:</div>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="bondage">
+                    <span class="exclusion-label">🔗 Bondage & BDSM</span>
+                </label>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="public">
+                    <span class="exclusion-label">🌍 Public Activities</span>
+                </label>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="roleplay">
+                    <span class="exclusion-label">🎭 Role Playing</span>
+                </label>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="toys">
+                    <span class="exclusion-label">🧸 Toys & Accessories</span>
+                </label>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="voyeur">
+                    <span class="exclusion-label">👀 Watching & Recording</span>
+                </label>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="taboo" checked>
+                    <span class="exclusion-label">🚫 Taboo & Extreme</span>
+                </label>
+            </div>
+            
+            <button class="continue-btn" onclick="saveSettingsAndContinue()">
+                Start Playing
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Erotic Date Nigh</h1>
+            <p class="subtitle">A sophisticated game for adventurous couples</p>
+        </div>
+
+        <div class="current-settings" id="currentSettings">
+            <span>Current Level: <strong>Spicy</strong></span>
+            <button class="settings-btn" onclick="showSettings()">Change</button>
+        </div>
+
+        <div class="player-turn">
+            <div class="current-player" id="currentPlayerDisplay">Player 1's Turn</div>
+            <div class="turn-counter" id="turnCounter">Turn #1</div>
+        </div>
+
+        <div class="game-area">
+            <div class="action-buttons">
+                <button class="action-btn clothing" onclick="takeAction('Remove Clothing')" aria-label="Remove piece of clothing">
+                    <span class="btn-emoji">🔥</span>
+                    <span class="btn-text">Remove Clothing</span>
+                </button>
+                
+                <button class="action-btn drink" onclick="takeAction('Take a Sip')" aria-label="Take a sip of drink">
+                    <span class="btn-emoji">🥂</span>
+                    <span class="btn-text">Take a Sip</span>
+                </button>
+                
+                <button class="action-btn shot" onclick="takeAction('Take a Shot')" aria-label="Take a shot">
+                    <span class="btn-emoji">🍸</span>
+                    <span class="btn-text">Take a Shot</span>
+                </button>
+                
+                <button class="action-btn question" onclick="takeAction('Question')" aria-label="Answer a spicy question">
+                    <span class="btn-emoji">💋</span>
+                    <span class="btn-text">Will You Ever...</span>
+                </button>
+            </div>
+
+            <div class="question-display" id="questionDisplay">
+                <div class="question-title">Will You Ever...</div>
+                <div class="question-text" id="questionText"></div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <span class="question-intensity" id="questionIntensity"></span>
+                </div>
+            </div>
+
+            <button class="next-turn-btn" id="nextTurnBtn" onclick="nextTurn()" disabled>
+                Complete Action & Next Turn
+            </button>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div>Loading...</div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Configuration - REPLACE WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQx7JftcZE2u4291ElVv8_Li2v_edscxf4Ibygpyz2JzmRvU3qrCFKgvrrPKKrMX-C/exec';
+        
+        // Game State
+        let gameState = {
+            currentPlayer: 'Player1',
+            totalTurns: 0,
+            player1Name: 'Player 1',
+            player2Name: 'Player 2',
+            lastAction: '',
+            actionTaken: false,
+            spiceLevel: 2, // 1=Romantic, 2=Spicy, 3=Intense, 4=Extreme
+            excludedCategories: ['taboo'],
+            sessionID: generateSessionID()
+        };
+
+        // Comprehensive Questions Database (organized by spice level and category)
+        const questionsDatabase = {
+            1: { // Romantic
+                general: [
+                    "Will you ever let me give you a sensual massage tonight?",
+                    "Will you ever tell me what makes you feel most loved?",
+                    "Will you ever dance with me in just our underwear?",
+                    "Will you ever let me undress you slowly by candlelight?",
+                    "Will you ever let me worship your body with kisses?",
+                    "Will you ever write me a love letter describing your desires?"
+                ],
+                fantasy: [
+                    "Will you ever share your most romantic fantasy with me?",
+                    "Will you ever tell me about your dream romantic getaway?",
+                    "Will you ever describe how you want to be seduced?"
+                ]
+            },
+            2: { // Spicy  
+                general: [
+                    "Will you ever let me choose what you wear to bed tonight?",
+                    "Will you ever try that position we talked about?",
+                    "Will you ever tell me your secret turn-on?",
+                    "Will you ever let me tease you until you can't take it?",
+                    "Will you ever skinny dip with me tonight?",
+                    "Will you ever let me wake you up with oral sex?",
+                    "Will you ever have sex with me in the shower?",
+                    "Will you ever let me see you completely naked in daylight?",
+                    "Will you ever tell me what you want me to do to you right now?",
+                    "Will you ever try making love without saying a word?"
+                ],
+                fantasy: [
+                    "Will you ever tell me your dirtiest fantasy?",
+                    "Will you ever share what you think about when you touch yourself?",
+                    "Will you ever describe your perfect night of passion?"
+                ],
+                voyeur: [
+                    "Will you ever let me watch you touch yourself?",
+                    "Will you ever show me how you like to be touched?",
+                    "Will you ever let me take photos of you in lingerie?",
+                    "Will you ever send me a sexy photo when I'm at work?"
+                ]
+            },
+            3: { // Intense
+                general: [
+                    "Will you ever try anal with me?",
+                    "Will you ever let me tease you until you can't take it?",
+                    "Will you ever try edging with me?",
+                    "Will you ever let me use ice on your body?",
+                    "Will you ever let me completely dominate you tonight?"
+                ],
+                bondage: [
+                    "Will you ever let me tie your hands behind your back?",
+                    "Will you ever let me blindfold you during foreplay?",
+                    "Will you ever let me use handcuffs on you?",
+                    "Will you ever try being completely submissive to me?",
+                    "Will you ever let me spank you?",
+                    "Will you ever let me control when you climax?"
+                ],
+                public: [
+                    "Will you ever let me pleasure you in a public place?",
+                    "Will you ever risk getting caught with me?",
+                    "Will you ever try having sex in a risky location?",
+                    "Will you ever have sex with me while others are nearby?"
+                ],
+                toys: [
+                    "Will you ever use toys with me?",
+                    "Will you ever let me control your pleasure with a toy?",
+                    "Will you ever experiment with different toys together?"
+                ],
+                roleplay: [
+                    "Will you ever role-play being strangers meeting for the first time?",
+                    "Will you ever dress up in costume for me?",
+                    "Will you ever pretend to be someone else in bed?"
+                ],
+                voyeur: [
+                    "Will you ever let me record us (just for us)?",
+                    "Will you ever moan my name while I watch you?",
+                    "Will you ever perform for me like I'm your audience?"
+                ]
+            },
+            4: { // Extreme  
+                general: [
+                    "Will you ever try something that pushes both our boundaries?",
+                    "Will you ever explore your darkest desires with me?"
+                ],
+                bondage: [
+                    "Will you ever try pain mixed with pleasure?",
+                    "Will you ever experiment with power exchange scenarios?",
+                    "Will you ever let me have complete control over your body?"
+                ],
+                toys: [
+                    "Will you ever try double penetration with toys?",
+                    "Will you ever experiment with extreme toys?"
+                ],
+                taboo: [
+                    "Will you ever try taboo role-playing scenarios?",
+                    "Will you ever explore forbidden fantasies with me?",
+                    "Will you ever let me fulfill your most secret desire?"
+                ]
+            }
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGameState();
+            
+            // Show settings on first load or if no preferences saved
+            if (!localStorage.getItem('eroticDateNighSettings')) {
+                showSettings();
+            } else {
+                updateDisplay();
+            }
+
+            // Register service worker for PWA functionality
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('data:text/javascript,// Minimal service worker').catch(() => {
+                    // Service worker registration failed - continue without PWA features
+                });
+            }
+        });
+
+        // Utility Functions
+        function generateSessionID() {
+            return 'session_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function showLoading(show = true) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Settings Functions
+        function selectSpiceLevel(level) {
+            gameState.spiceLevel = level;
+            
+            // Update visual selection
+            document.querySelectorAll('.spice-level').forEach(el => {
+                el.classList.remove('selected');
+            });
+            document.querySelector(`[data-level="${level}"]`).classList.add('selected');
+        }
+
+        function toggleExclusion(labelElement) {
+            // Prevent double-firing from both label and checkbox
+            setTimeout(() => {
+                const checkbox = labelElement.querySelector('.exclusion-checkbox');
+                if (checkbox) {
+                    labelElement.style.background = checkbox.checked ? 
+                        'rgba(255, 255, 255, 0.15)' : 
+                        'rgba(255, 255, 255, 0.05)';
+                }
+            }, 10);
+        }
+
+        function showSettings() {
+            document.getElementById('settingsOverlay').classList.remove('hidden');
+            
+            // Update current selections
+            document.querySelector(`[data-level="${gameState.spiceLevel}"]`).classList.add('selected');
+            
+            // Update exclusion checkboxes
+            gameState.excludedCategories.forEach(category => {
+                const checkbox = document.querySelector(`[data-category="${category}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.closest('.exclusion-item').style.background = 'rgba(255, 255, 255, 0.15)';
+                }
+            });
+        }
+
+        function saveSettingsAndContinue() {
+            // Get excluded categories
+            const excludedCategories = [];
+            document.querySelectorAll('.exclusion-checkbox:checked').forEach(checkbox => {
+                excludedCategories.push(checkbox.dataset.category);
+            });
+            
+            gameState.excludedCategories = excludedCategories;
+            
+            // Save to localStorage
+            localStorage.setItem('eroticDateNighSettings', JSON.stringify({
+                spiceLevel: gameState.spiceLevel,
+                excludedCategories: gameState.excludedCategories
+            }));
+            
+            // Save preferences to backend if connected
+            saveUserPreferences();
+            
+            // Hide overlay and update display
+            document.getElementById('settingsOverlay').classList.add('hidden');
+            updateCurrentSettingsDisplay();
+            updateDisplay();
+            
+            showNotification('Settings saved! Enjoy your customized experience.');
+        }
+
+        function updateCurrentSettingsDisplay() {
+            const levels = {1: 'Romantic', 2: 'Spicy', 3: 'Intense', 4: 'Extreme'};
+            const levelName = levels[gameState.spiceLevel];
+            
+            document.getElementById('currentSettings').innerHTML = `
+                <span>Current Level: <strong>${levelName}</strong></span>
+                <button class="settings-btn" onclick="showSettings()">Change</button>
+            `;
+        }
+
+        // Game Functions
+        function updateDisplay() {
+            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
+            document.getElementById('currentPlayerDisplay').textContent = currentPlayerName + "'s Turn";
+            document.getElementById('turnCounter').textContent = `Turn #${gameState.totalTurns + 1}`;
+            
+            // Reset action state
+            gameState.actionTaken = false;
+            document.getElementById('nextTurnBtn').disabled = true;
+            document.getElementById('nextTurnBtn').classList.remove('pulse');
+            document.getElementById('questionDisplay').classList.remove('show');
+            
+            updateCurrentSettingsDisplay();
+        }
+
+        function getFilteredQuestion() {
+            const availableQuestions = [];
+            const levelQuestions = questionsDatabase[gameState.spiceLevel] || {};
+            
+            // Get questions from all categories not excluded
+            Object.keys(levelQuestions).forEach(category => {
+                if (!gameState.excludedCategories.includes(category)) {
+                    availableQuestions.push(...levelQuestions[category]);
+                }
+            });
+            
+            // Fallback to general questions if no categories available
+            if (availableQuestions.length === 0 && levelQuestions.general) {
+                availableQuestions.push(...levelQuestions.general);
+            }
+            
+            // Ultimate fallback
+            if (availableQuestions.length === 0) {
+                return "Will you ever make this night unforgettable?";
+            }
+            
+            // Return random question
+            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+            return availableQuestions[randomIndex];
+        }
+
+        async function takeAction(action) {
+            if (gameState.actionTaken) {
+                showNotification('Already took an action this turn!');
+                return;
+            }
+
+            gameState.actionTaken = true;
+            gameState.lastAction = action;
+            
+            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
+            
+            if (action === 'Question') {
+                const question = getFilteredQuestion();
+                const levels = {1: 'Romantic', 2: 'Spicy', 3: 'Intense', 4: 'Extreme'};
+                
+                document.getElementById('questionText').textContent = question;
+                document.getElementById('questionIntensity').textContent = levels[gameState.spiceLevel];
+                document.getElementById('questionDisplay').classList.add('show');
+                showNotification(`${currentPlayerName} is answering a ${levels[gameState.spiceLevel].toLowerCase()} question!`);
+                
+                // Log the specific question for backend
+                await logAction(currentPlayerName, action, question);
+            } else {
+                showNotification(`${currentPlayerName} chose: ${action}`);
+                await logAction(currentPlayerName, action);
+            }
+            
+            // Enable next turn button with visual feedback
+            const nextBtn = document.getElementById('nextTurnBtn');
+            nextBtn.disabled = false;
+            nextBtn.classList.add('pulse');
+        }
+
+        async function nextTurn() {
+            if (!gameState.actionTaken) {
+                showNotification('Take an action first!');
+                return;
+            }
+            
+            // Switch players
+            gameState.currentPlayer = gameState.currentPlayer === 'Player1' ? 'Player2' : 'Player1';
+            gameState.totalTurns++;
+            
+            // Update display
+            updateDisplay();
+            showNotification('Turn switched!');
+            
+            // Save state
+            saveGameState();
+        }
+
+        // Backend Communication
+        async function logAction(playerName, action, question = '') {
+            try {
+                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'logGameAction',
+                            playerName: playerName,
+                            gameAction: action,
+                            question: question,
+                            spiceLevel: gameState.spiceLevel,
+                            excludedCategories: gameState.excludedCategories,
+                            sessionID: gameState.sessionID
+                        })
+                    });
+                }
+            } catch (error) {
+                console.log('Could not log to backend:', error);
+                // Continue without backend - app works offline
+            }
+        }
+
+        async function saveUserPreferences() {
+            try {
+                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'saveUserPreferences',
+                            spiceLevel: gameState.spiceLevel,
+                            excludedCategories: gameState.excludedCategories,
+                            sessionID: gameState.sessionID
+                        })
+                    });
+                }
+            } catch (error) {
+                console.log('Could not save preferences to backend:', error);
+                // Continue without backend - preferences saved locally
+            }
+        }
+
+        // Local Storage Functions
+        function saveGameState() {
+            try {
+                localStorage.setItem('eroticDateNighGameState', JSON.stringify(gameState));
+            } catch (error) {
+                console.log('Could not save game state locally');
+            }
+        }
+
+        function loadGameState() {
+            try {
+                const saved = localStorage.getItem('eroticDateNighGameState');
+                const savedSettings = localStorage.getItem('eroticDateNighSettings');
+                
+                if (saved) {
+                    const parsedState = JSON.parse(saved);
+                    gameState = { ...gameState, ...parsedState };
+                }
+                
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    gameState.spiceLevel = settings.spiceLevel || 2;
+                    gameState.excludedCategories = settings.excludedCategories || ['taboo'];
+                }
+                
+                // Ensure session ID exists
+                if (!gameState.sessionID) {
+                    gameState.sessionID = generateSessionID();
+                }
+            } catch (error) {
+                console.log('Could not load saved data');
+                // Use default state
+            }
+        }
+
+        // Touch and Mobile Optimizations
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Prevent context menu on long press
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Add haptic feedback for supported devices
+        function triggerHapticFeedback() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50);
+            }
+        }
+
+        // Add haptic feedback to button clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('.action-btn, .spice-level, .continue-btn, .next-turn-btn')) {
+                triggerHapticFeedback();
+            }
+        });
+
+        // Performance monitoring
+        if ('performance' in window) {
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    const loadTime = performance.now();
+                    console.log(`App loaded in ${Math.round(loadTime)}ms`);
+                }, 0);
+            });
+        }
+
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('App error:', e.error);
+            showNotification('Something went wrong, but the app should still work!');
+        });
+
+        // Network status monitoring
+        if ('navigator' in window && 'onLine' in navigator) {
+            function updateOnlineStatus() {
+                if (!navigator.onLine) {
+                    showNotification('Offline mode - app still works locally!');
+                }
+            }
+            
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erotic Date Nigh 🔥</title>
+    <title>Erotic Date Nigh</title>
+    <meta name="description" content="A sophisticated intimate game for adventurous couples">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="data:application/json,{
+        &quot;name&quot;: &quot;Erotic Date Nigh&quot;,
+        &quot;short_name&quot;: &quot;Date Nigh&quot;,
+        &quot;description&quot;: &quot;Sophisticated couples game&quot;,
+        &quot;start_url&quot;: &quot;.&quot;,
+        &quot;display&quot;: &quot;standalone&quot;,
+        &quot;background_color&quot;: &quot;#0a0a0a&quot;,
+        &quot;theme_color&quot;: &quot;#d4af37&quot;,
+        &quot;icons&quot;: [
+            {&quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23d4af37'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='72' fill='%23000'%3E🔥%3C/text%3E%3C/svg%3E&quot;, &quot;sizes&quot;: &quot;192x192&quot;, &quot;type&quot;: &quot;image/svg+xml&quot;}
+        ]
+    }">
+    
     <style>
+        :root {
+            --gold: #d4af37;
+            --deep-red: #8b0000;
+            --burgundy: #722f37;
+            --cream: #f5f5dc;
+            --black: #0a0a0a;
+            --dark-grey: #1a1a1a;
+            --medium-grey: #2a2a2a;
+            --transparent-gold: rgba(212, 175, 55, 0.1);
+            --shadow-gold: 0 0 30px rgba(212, 175, 55, 0.3);
+            --shadow-deep: 0 8px 40px rgba(0, 0, 0, 0.6);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,22 +637,204 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Source Sans Pro', sans-serif;
+            background: linear-gradient(135deg, var(--black), var(--dark-grey), var(--burgundy));
+            background-attachment: fixed;
             min-height: 100vh;
-            color: white;
+            color: var(--cream);
             overflow-x: hidden;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         .container {
-            max-width: 400px;
+            max-width: 420px;
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
+        /* Settings Overlay */
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .settings-overlay.hidden {
+            display: none;
+        }
+
+        .settings-modal {
+            background: linear-gradient(135deg, var(--dark-grey), var(--medium-grey));
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            border: 2px solid var(--gold);
+            box-shadow: var(--shadow-deep);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .settings-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .spice-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .spice-level {
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 15px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spice-level::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .spice-level:hover::before {
+            left: 100%;
+        }
+
+        .spice-level.romantic {
+            background: linear-gradient(135deg, #4a90e2, #7b68ee);
+        }
+
+        .spice-level.spicy {
+            background: linear-gradient(135deg, #ff6b9d, #ff8a80);
+        }
+
+        .spice-level.intense {
+            background: linear-gradient(135deg, #ff4757, #c44569);
+        }
+
+        .spice-level.extreme {
+            background: linear-gradient(135deg, var(--deep-red), #000);
+        }
+
+        .spice-level.selected {
+            border-color: var(--gold);
+            box-shadow: var(--shadow-gold);
+            transform: scale(1.05);
+        }
+
+        .exclusions-section {
+            margin: 25px 0;
+        }
+
+        .exclusions-title {
+            font-size: 1.2rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            text-align: center;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .exclusion-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .exclusion-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .exclusion-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--gold);
+            cursor: pointer;
+        }
+
+        .exclusion-label {
+            flex: 1;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, var(--gold), #f4e4bc);
+            color: var(--black);
+            border: none;
+            border-radius: 15px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .continue-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .continue-btn:hover::before {
+            left: 100%;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        /* Main App Styles */
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -35,32 +842,84 @@
         }
 
         .title {
+            font-family: 'Cormorant Garamond', serif;
             font-size: 2.5rem;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: var(--gold);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
         }
 
         .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 20px;
+            font-size: 1rem;
+            color: var(--cream);
+            opacity: 0.8;
+            font-style: italic;
         }
 
-        .player-turn {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
+        .current-settings {
+            background: var(--transparent-gold);
+            border: 1px solid rgba(212, 175, 55, 0.3);
             border-radius: 15px;
             padding: 15px;
             text-align: center;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        .settings-btn {
+            background: none;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: var(--gold);
+            color: var(--black);
+            transform: translateY(-1px);
+        }
+
+        .player-turn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
             margin-bottom: 30px;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-turn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .current-player {
-            font-size: 1.3rem;
-            font-weight: bold;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
             margin-bottom: 5px;
+            color: var(--gold);
         }
 
         .turn-counter {
@@ -79,83 +938,122 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .action-btn {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
             border: none;
             border-radius: 20px;
             padding: 20px 15px;
             color: white;
             font-size: 1rem;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
             min-height: 100px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
         }
 
         .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
 
         .action-btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         .action-btn.clothing {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            background: linear-gradient(135deg, #ff6b9d, #ff8a80);
         }
 
         .action-btn.drink {
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
         }
 
         .action-btn.shot {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
+            background: linear-gradient(135deg, #ba68c8, #ab47bc);
         }
 
         .action-btn.question {
-            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            background: linear-gradient(135deg, var(--gold), #f4e4bc);
+            color: var(--black);
         }
 
         .btn-emoji {
             font-size: 2rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
         .btn-text {
             font-size: 0.9rem;
             text-align: center;
             line-height: 1.2;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .question-display {
-            background: rgba(255,255,255,0.1);
+            background: rgba(212, 175, 55, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 25px;
             margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(212, 175, 55, 0.3);
             display: none;
-            animation: fadeInUp 0.5s ease-out;
+            animation: slideUp 0.5s ease-out;
+            position: relative;
         }
 
         .question-display.show {
             display: block;
         }
 
+        .question-display::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(212, 175, 55, 0.05), transparent);
+            animation: rotate 8s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         .question-title {
-            font-size: 1.2rem;
-            font-weight: bold;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
             margin-bottom: 15px;
             text-align: center;
-            color: #feca57;
+            color: var(--gold);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .question-text {
@@ -163,26 +1061,55 @@
             line-height: 1.4;
             text-align: center;
             font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .question-intensity {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--black);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .next-turn-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--deep-red), var(--burgundy));
             border: none;
             border-radius: 15px;
             padding: 15px 30px;
             color: white;
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
             margin-top: auto;
             margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .next-turn-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .next-turn-btn:hover::before {
+            left: 100%;
         }
 
         .next-turn-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4);
         }
 
         .next-turn-btn:disabled {
@@ -191,120 +1118,13 @@
             transform: none;
         }
 
-        .settings-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
+        .next-turn-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
         }
 
-        .player-names {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .player-input {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.9);
-            color: #333;
-            font-size: 1rem;
-        }
-
-        .custom-question-form {
-            margin-top: 15px;
-        }
-
-        .custom-question-input {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.9);
-            color: #333;
-            font-size: 1rem;
-            margin-bottom: 10px;
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 10px;
-            padding: 12px 25px;
-            color: white;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .reset-btn {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-            border: none;
-            border-radius: 10px;
-            padding: 10px 20px;
-            color: white;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .loading {
+        .next-turn-btn:disabled::before {
             display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .spinner {
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top: 3px solid white;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .pulse {
@@ -312,15 +1132,9 @@
         }
 
         @keyframes pulse {
-            0% {
-                box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            }
-            50% {
-                box-shadow: 0 8px 20px rgba(255,255,255,0.4);
-            }
-            100% {
-                box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            }
+            0% { box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4); }
+            50% { box-shadow: 0 8px 30px rgba(139, 0, 0, 0.8); }
+            100% { box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4); }
         }
 
         .notification {
@@ -328,12 +1142,17 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
             color: white;
             padding: 15px 25px;
-            border-radius: 10px;
-            z-index: 1000;
+            border-radius: 15px;
+            z-index: 999;
             display: none;
+            border: 1px solid var(--gold);
+            box-shadow: var(--shadow-deep);
+            max-width: 90%;
+            text-align: center;
         }
 
         .notification.show {
@@ -341,363 +1160,143 @@
             animation: slideDown 0.3s ease-out;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            z-index: 1001;
+            display: none;
+            border: 1px solid var(--gold);
         }
 
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Responsive Design */
         @media (max-width: 480px) {
-            .container {
-                padding: 15px;
+            .container { 
+                padding: 15px; 
             }
             
-            .title {
-                font-size: 2rem;
+            .title { 
+                font-size: 2.2rem; 
             }
             
-            .action-btn {
-                padding: 15px 10px;
-                min-height: 80px;
+            .spice-selector { 
+                grid-template-columns: 1fr; 
+                gap: 10px;
             }
             
-            .btn-emoji {
-                font-size: 1.5rem;
+            .spice-level {
+                padding: 12px;
+                font-size: 0.85rem;
+            }
+            
+            .action-btn { 
+                padding: 15px 10px; 
+                min-height: 80px; 
+            }
+            
+            .btn-emoji { 
+                font-size: 1.5rem; 
             }
             
             .btn-text {
                 font-size: 0.8rem;
             }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1 class="title">Erotic Date Nigh 🔥</h1>
-            <p class="subtitle">A spicy game for adventurous couples</p>
-        </div>
 
-        <div class="player-turn">
-            <div class="current-player" id="currentPlayerDisplay">Player 1's Turn</div>
-            <div class="turn-counter" id="turnCounter">Turn #1</div>
-        </div>
+            .settings-modal {
+                padding: 25px;
+                margin: 10px;
+            }
 
-        <div class="game-area">
-            <div class="action-buttons">
-                <button class="action-btn clothing" onclick="takeAction('Remove Clothing')">
-                    <span class="btn-emoji">🥵</span>
-                    <span class="btn-text">Remove Clothing</span>
-                </button>
-                
-                <button class="action-btn drink" onclick="takeAction('Take a Sip')">
-                    <span class="btn-emoji">🍷</span>
-                    <span class="btn-text">Take a Sip</span>
-                </button>
-                
-                <button class="action-btn shot" onclick="takeAction('Take a Shot')">
-                    <span class="btn-emoji">🥃</span>
-                    <span class="btn-text">Take a Shot</span>
-                </button>
-                
-                <button class="action-btn question" onclick="takeAction('Question')">
-                    <span class="btn-emoji">💌</span>
-                    <span class="btn-text">Will You Ever...</span>
-                </button>
-            </div>
-
-            <div class="question-display" id="questionDisplay">
-                <div class="question-title">Will You Ever...</div>
-                <div class="question-text" id="questionText"></div>
-            </div>
-
-            <button class="next-turn-btn" id="nextTurnBtn" onclick="nextTurn()" disabled>
-                Complete Action & Next Turn
-            </button>
-        </div>
-
-        <div class="settings-section">
-            <h3 style="margin-bottom: 15px;">Settings</h3>
-            
-            <div class="player-names">
-                <input type="text" class="player-input" id="player1Name" placeholder="Player 1 Name" value="Player 1">
-                <input type="text" class="player-input" id="player2Name" placeholder="Player 2 Name" value="Player 2">
-            </div>
-            
-            <button class="submit-btn" onclick="updatePlayerNames()">Update Names</button>
-            
-            <div class="custom-question-form">
-                <h4 style="margin-bottom: 10px;">Add Custom Question</h4>
-                <textarea class="custom-question-input" id="customQuestion" placeholder="Will you ever..."></textarea>
-                <button class="submit-btn" onclick="submitCustomQuestion()">Add Question</button>
-            </div>
-            
-            <button class="reset-btn" onclick="resetGame()">Reset Game</button>
-        </div>
-    </div>
-
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <div>Loading...</div>
-    </div>
-
-    <div class="notification" id="notification"></div>
-
-    <script>
-        // Configuration - Replace with your actual Google Apps Script Web App URL
-        const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
-        
-        // Game state
-        let gameState = {
-            currentPlayer: 'Player1',
-            totalTurns: 0,
-            player1Name: 'Player 1',
-            player2Name: 'Player 2',
-            lastAction: '',
-            actionTaken: false
-        };
-
-        // Sample questions for offline mode
-        const sampleQuestions = [
-            "Will you ever let me watch you touch yourself?",
-            "Will you ever try something we've never done before tonight?",
-            "Will you ever tell me your dirtiest fantasy right now?",
-            "Will you ever let me tie your hands behind your back?",
-            "Will you ever kiss me somewhere you've never kissed before?",
-            "Will you ever let me undress you with my teeth?",
-            "Will you ever moan my name while I watch?",
-            "Will you ever let me choose what you wear tomorrow?",
-            "Will you ever tell me what you're thinking about when you look at me like that?",
-            "Will you ever try that position we talked about?"
-        ];
-
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            updateDisplay();
-            loadGameState();
-        });
-
-        // Show notification
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        // Show loading
-        function showLoading(show = true) {
-            const loading = document.getElementById('loading');
-            if (show) {
-                loading.classList.add('show');
-            } else {
-                loading.classList.remove('show');
+            .exclusion-item {
+                padding: 10px;
+                margin-bottom: 8px;
             }
         }
 
-        // Update display
-        function updateDisplay() {
-            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
-            document.getElementById('currentPlayerDisplay').textContent = currentPlayerName + "'s Turn";
-            document.getElementById('turnCounter').textContent = `Turn #${gameState.totalTurns + 1}`;
-            
-            // Update player name inputs
-            document.getElementById('player1Name').value = gameState.player1Name;
-            document.getElementById('player2Name').value = gameState.player2Name;
-            
-            // Reset action state
-            gameState.actionTaken = false;
-            document.getElementById('nextTurnBtn').disabled = true;
-            document.getElementById('questionDisplay').classList.remove('show');
-        }
-
-        // Take action
-        async function takeAction(action) {
-            if (gameState.actionTaken) {
-                showNotification('Already took an action this turn!');
-                return;
-            }
-
-            gameState.actionTaken = true;
-            gameState.lastAction = action;
-            
-            // Show action feedback
-            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
-            
-            if (action === 'Question') {
-                // Get and display question
-                const question = await getRandomQuestion();
-                document.getElementById('questionText').textContent = question;
-                document.getElementById('questionDisplay').classList.add('show');
-                showNotification(`${currentPlayerName} is answering a spicy question!`);
-            } else {
-                showNotification(`${currentPlayerName} chose: ${action}`);
+        @media (max-width: 360px) {
+            .title { 
+                font-size: 2rem; 
             }
             
-            // Enable next turn button
-            document.getElementById('nextTurnBtn').disabled = false;
-            document.getElementById('nextTurnBtn').classList.add('pulse');
-            
-            // Log action (if connected to backend)
-            await logAction(currentPlayerName, action);
-        }
-
-        // Get random question
-        async function getRandomQuestion() {
-            try {
-                // Try to get from backend first
-                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-                    const response = await fetch(SCRIPT_URL + '?action=getRandomQuestion');
-                    const data = await response.json();
-                    if (data.question) {
-                        return data.question;
-                    }
-                }
-            } catch (error) {
-                console.log('Backend not available, using sample questions');
+            .action-buttons { 
+                gap: 12px; 
             }
-            
-            // Fallback to sample questions
-            const randomIndex = Math.floor(Math.random() * sampleQuestions.length);
-            return sampleQuestions[randomIndex];
-        }
 
-        // Next turn
-        async function nextTurn() {
-            if (!gameState.actionTaken) {
-                showNotification('Take an action first!');
-                return;
+            .settings-title {
+                font-size: 1.7rem;
             }
-            
-            // Switch players
-            gameState.currentPlayer = gameState.currentPlayer === 'Player1' ? 'Player2' : 'Player1';
-            gameState.totalTurns++;
-            
-            // Update display
-            updateDisplay();
-            document.getElementById('nextTurnBtn').classList.remove('pulse');
-            
-            showNotification('Turn switched!');
-            
-            // Save state
-            await saveGameState();
-        }
 
-        // Update player names
-        function updatePlayerNames() {
-            gameState.player1Name = document.getElementById('player1Name').value || 'Player 1';
-            gameState.player2Name = document.getElementById('player2Name').value || 'Player 2';
-            updateDisplay();
-            showNotification('Player names updated!');
-            saveGameState();
-        }
-
-        // Submit custom question
-        async function submitCustomQuestion() {
-            const question = document.getElementById('customQuestion').value.trim();
-            if (!question) {
-                showNotification('Please enter a question');
-                return;
-            }
-            
-            try {
-                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            action: 'addCustomQuestion',
-                            question: question
-                        })
-                    });
-                }
-                
-                document.getElementById('customQuestion').value = '';
-                showNotification('Custom question submitted!');
-            } catch (error) {
-                showNotification('Question saved locally (backend not connected)');
-                console.log('Backend not available');
+            .exclusion-label {
+                font-size: 0.85rem;
             }
         }
 
-        // Reset game
-        async function resetGame() {
-            if (confirm('Are you sure you want to reset the game?')) {
-                gameState = {
-                    currentPlayer: 'Player1',
-                    totalTurns: 0,
-                    player1Name: gameState.player1Name, // Keep names
-                    player2Name: gameState.player2Name,
-                    lastAction: '',
-                    actionTaken: false
-                };
-                
-                updateDisplay();
-                showNotification('Game reset!');
-                await saveGameState();
+        /* Performance optimizations */
+        .action-btn, .spice-level, .continue-btn, .next-turn-btn {
+            will-change: transform;
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
 
-        // Log action to backend
-        async function logAction(playerName, action) {
-            try {
-                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            action: 'logGameAction',
-                            playerName: playerName,
-                            gameAction: action
-                        })
-                    });
-                }
-            } catch (error) {
-                console.log('Could not log to backend:', error);
-            }
+        /* Touch improvements for mobile */
+        .action-btn, .spice-level, .continue-btn, .settings-btn, .exclusion-item {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
-        // Save game state locally
-        function saveGameState() {
-            localStorage.setItem('eroticDateNighGameState', JSON.stringify(gameState));
+        /* Prevent zoom on input focus (iOS) */
+        input, textarea, select {
+            font-size: 16px;
         }
-
-        // Load game state
-        function loadGameState() {
-            const saved = localStorage.getItem('eroticDateNighGameState');
-            if (saved) {
-                try {
-                    gameState = { ...gameState, ...JSON.parse(saved) };
-                    updateDisplay();
-                } catch (error) {
-                    console.log('Could not load saved game state');
-                }
-            }
-        }
-
-        // Add touch feedback for mobile
-        document.addEventListener('touchstart', function() {}, {passive: true});
-        
-        // Prevent zoom on double tap
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (event) {
-            var now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-    </script>
-</body>
-</html>

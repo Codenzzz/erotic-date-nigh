@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erotic Date Nigh 🔥</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .player-turn {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .current-player {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .turn-counter {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border: none;
+            border-radius: 20px;
+            padding: 20px 15px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-height: 100px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        .action-btn.clothing {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        }
+
+        .action-btn.drink {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+
+        .action-btn.shot {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .action-btn.question {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+        }
+
+        .btn-emoji {
+            font-size: 2rem;
+        }
+
+        .btn-text {
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .question-display {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .question-display.show {
+            display: block;
+        }
+
+        .question-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #feca57;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.4;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .next-turn-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 15px;
+            padding: 15px 30px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
+
+        .next-turn-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+        }
+
+        .next-turn-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .settings-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .player-names {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .player-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .custom-question-form {
+            margin-top: 15px;
+        }
+
+        .custom-question-input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            }
+            50% {
+                box-shadow: 0 8px 20px rgba(255,255,255,0.4);
+            }
+            100% {
+                box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .action-btn {
+                padding: 15px 10px;
+                min-height: 80px;
+            }
+            
+            .btn-emoji {
+                font-size: 1.5rem;
+            }
+            
+            .btn-text {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Erotic Date Nigh 🔥</h1>
+            <p class="subtitle">A spicy game for adventurous couples</p>
+        </div>
+
+        <div class="player-turn">
+            <div class="current-player" id="currentPlayerDisplay">Player 1's Turn</div>
+            <div class="turn-counter" id="turnCounter">Turn #1</div>
+        </div>
+
+        <div class="game-area">
+            <div class="action-buttons">
+                <button class="action-btn clothing" onclick="takeAction('Remove Clothing')">
+                    <span class="btn-emoji">🥵</span>
+                    <span class="btn-text">Remove Clothing</span>
+                </button>
+                
+                <button class="action-btn drink" onclick="takeAction('Take a Sip')">
+                    <span class="btn-emoji">🍷</span>
+                    <span class="btn-text">Take a Sip</span>
+                </button>
+                
+                <button class="action-btn shot" onclick="takeAction('Take a Shot')">
+                    <span class="btn-emoji">🥃</span>
+                    <span class="btn-text">Take a Shot</span>
+                </button>
+                
+                <button class="action-btn question" onclick="takeAction('Question')">
+                    <span class="btn-emoji">💌</span>
+                    <span class="btn-text">Will You Ever...</span>
+                </button>
+            </div>
+
+            <div class="question-display" id="questionDisplay">
+                <div class="question-title">Will You Ever...</div>
+                <div class="question-text" id="questionText"></div>
+            </div>
+
+            <button class="next-turn-btn" id="nextTurnBtn" onclick="nextTurn()" disabled>
+                Complete Action & Next Turn
+            </button>
+        </div>
+
+        <div class="settings-section">
+            <h3 style="margin-bottom: 15px;">Settings</h3>
+            
+            <div class="player-names">
+                <input type="text" class="player-input" id="player1Name" placeholder="Player 1 Name" value="Player 1">
+                <input type="text" class="player-input" id="player2Name" placeholder="Player 2 Name" value="Player 2">
+            </div>
+            
+            <button class="submit-btn" onclick="updatePlayerNames()">Update Names</button>
+            
+            <div class="custom-question-form">
+                <h4 style="margin-bottom: 10px;">Add Custom Question</h4>
+                <textarea class="custom-question-input" id="customQuestion" placeholder="Will you ever..."></textarea>
+                <button class="submit-btn" onclick="submitCustomQuestion()">Add Question</button>
+            </div>
+            
+            <button class="reset-btn" onclick="resetGame()">Reset Game</button>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div>Loading...</div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Configuration - Replace with your actual Google Apps Script Web App URL
+        const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+        
+        // Game state
+        let gameState = {
+            currentPlayer: 'Player1',
+            totalTurns: 0,
+            player1Name: 'Player 1',
+            player2Name: 'Player 2',
+            lastAction: '',
+            actionTaken: false
+        };
+
+        // Sample questions for offline mode
+        const sampleQuestions = [
+            "Will you ever let me watch you touch yourself?",
+            "Will you ever try something we've never done before tonight?",
+            "Will you ever tell me your dirtiest fantasy right now?",
+            "Will you ever let me tie your hands behind your back?",
+            "Will you ever kiss me somewhere you've never kissed before?",
+            "Will you ever let me undress you with my teeth?",
+            "Will you ever moan my name while I watch?",
+            "Will you ever let me choose what you wear tomorrow?",
+            "Will you ever tell me what you're thinking about when you look at me like that?",
+            "Will you ever try that position we talked about?"
+        ];
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDisplay();
+            loadGameState();
+        });
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Show loading
+        function showLoading(show = true) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+
+        // Update display
+        function updateDisplay() {
+            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
+            document.getElementById('currentPlayerDisplay').textContent = currentPlayerName + "'s Turn";
+            document.getElementById('turnCounter').textContent = `Turn #${gameState.totalTurns + 1}`;
+            
+            // Update player name inputs
+            document.getElementById('player1Name').value = gameState.player1Name;
+            document.getElementById('player2Name').value = gameState.player2Name;
+            
+            // Reset action state
+            gameState.actionTaken = false;
+            document.getElementById('nextTurnBtn').disabled = true;
+            document.getElementById('questionDisplay').classList.remove('show');
+        }
+
+        // Take action
+        async function takeAction(action) {
+            if (gameState.actionTaken) {
+                showNotification('Already took an action this turn!');
+                return;
+            }
+
+            gameState.actionTaken = true;
+            gameState.lastAction = action;
+            
+            // Show action feedback
+            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
+            
+            if (action === 'Question') {
+                // Get and display question
+                const question = await getRandomQuestion();
+                document.getElementById('questionText').textContent = question;
+                document.getElementById('questionDisplay').classList.add('show');
+                showNotification(`${currentPlayerName} is answering a spicy question!`);
+            } else {
+                showNotification(`${currentPlayerName} chose: ${action}`);
+            }
+            
+            // Enable next turn button
+            document.getElementById('nextTurnBtn').disabled = false;
+            document.getElementById('nextTurnBtn').classList.add('pulse');
+            
+            // Log action (if connected to backend)
+            await logAction(currentPlayerName, action);
+        }
+
+        // Get random question
+        async function getRandomQuestion() {
+            try {
+                // Try to get from backend first
+                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                    const response = await fetch(SCRIPT_URL + '?action=getRandomQuestion');
+                    const data = await response.json();
+                    if (data.question) {
+                        return data.question;
+                    }
+                }
+            } catch (error) {
+                console.log('Backend not available, using sample questions');
+            }
+            
+            // Fallback to sample questions
+            const randomIndex = Math.floor(Math.random() * sampleQuestions.length);
+            return sampleQuestions[randomIndex];
+        }
+
+        // Next turn
+        async function nextTurn() {
+            if (!gameState.actionTaken) {
+                showNotification('Take an action first!');
+                return;
+            }
+            
+            // Switch players
+            gameState.currentPlayer = gameState.currentPlayer === 'Player1' ? 'Player2' : 'Player1';
+            gameState.totalTurns++;
+            
+            // Update display
+            updateDisplay();
+            document.getElementById('nextTurnBtn').classList.remove('pulse');
+            
+            showNotification('Turn switched!');
+            
+            // Save state
+            await saveGameState();
+        }
+
+        // Update player names
+        function updatePlayerNames() {
+            gameState.player1Name = document.getElementById('player1Name').value || 'Player 1';
+            gameState.player2Name = document.getElementById('player2Name').value || 'Player 2';
+            updateDisplay();
+            showNotification('Player names updated!');
+            saveGameState();
+        }
+
+        // Submit custom question
+        async function submitCustomQuestion() {
+            const question = document.getElementById('customQuestion').value.trim();
+            if (!question) {
+                showNotification('Please enter a question');
+                return;
+            }
+            
+            try {
+                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'addCustomQuestion',
+                            question: question
+                        })
+                    });
+                }
+                
+                document.getElementById('customQuestion').value = '';
+                showNotification('Custom question submitted!');
+            } catch (error) {
+                showNotification('Question saved locally (backend not connected)');
+                console.log('Backend not available');
+            }
+        }
+
+        // Reset game
+        async function resetGame() {
+            if (confirm('Are you sure you want to reset the game?')) {
+                gameState = {
+                    currentPlayer: 'Player1',
+                    totalTurns: 0,
+                    player1Name: gameState.player1Name, // Keep names
+                    player2Name: gameState.player2Name,
+                    lastAction: '',
+                    actionTaken: false
+                };
+                
+                updateDisplay();
+                showNotification('Game reset!');
+                await saveGameState();
+            }
+        }
+
+        // Log action to backend
+        async function logAction(playerName, action) {
+            try {
+                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'logGameAction',
+                            playerName: playerName,
+                            gameAction: action
+                        })
+                    });
+                }
+            } catch (error) {
+                console.log('Could not log to backend:', error);
+            }
+        }
+
+        // Save game state locally
+        function saveGameState() {
+            localStorage.setItem('eroticDateNighGameState', JSON.stringify(gameState));
+        }
+
+        // Load game state
+        function loadGameState() {
+            const saved = localStorage.getItem('eroticDateNighGameState');
+            if (saved) {
+                try {
+                    gameState = { ...gameState, ...JSON.parse(saved) };
+                    updateDisplay();
+                } catch (error) {
+                    console.log('Could not load saved game state');
+                }
+            }
+        }
+
+        // Add touch feedback for mobile
+        document.addEventListener('touchstart', function() {}, {passive: true});
+        
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            var now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>

@@ -1,877 +1,9 @@
-</style>
-</head>
-<body>
-    <!-- Player Setup Overlay -->
-    <div class="settings-overlay" id="playerSetupOverlay">
-        <div class="settings-modal">
-            <h2 class="settings-title">Welcome to Erotic Date Nigh</h2>
-            
-            <div style="margin-bottom: 25px; text-align: center;">
-                <p style="color: var(--cream); margin-bottom: 20px;">Enter your names to get started:</p>
-                
-                <div class="player-names-setup">
-                    <input type="text" class="player-input" id="setupPlayer1Name" placeholder="Player 1 Name" maxlength="20">
-                    <input type="text" class="player-input" id="setupPlayer2Name" placeholder="Player 2 Name" maxlength="20">
-                </div>
-            </div>
-            
-            <button class="continue-btn" onclick="savePlayerNamesAndContinue()">
-                Continue to Game Settings
-            </button>
-        </div>
-    </div>
-
-    <!-- Settings Overlay -->
-    <div class="settings-overlay hidden" id="settingsOverlay">
-        <div class="settings-modal">
-            <h2 class="settings-title">Choose Your Experience</h2>
-            
-            <div class="spice-selector">
-                <div class="spice-level romantic" data-level="1" onclick="selectSpiceLevel(1)">
-                    <div>😊 Romantic</div>
-                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Sensual & Sweet</div>
-                </div>
-                <div class="spice-level spicy selected" data-level="2" onclick="selectSpiceLevel(2)">
-                    <div>🔥 Spicy</div>
-                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Passionate & Bold</div>
-                </div>
-                <div class="spice-level intense" data-level="3" onclick="selectSpiceLevel(3)">
-                    <div>🌶️ Intense</div>
-                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Kinky & Explicit</div>
-                </div>
-                <div class="spice-level extreme" data-level="4" onclick="selectSpiceLevel(4)">
-                    <div>🔥🔥 Extreme</div>
-                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">No Limits</div>
-                </div>
-            </div>
-            
-            <div class="exclusions-section">
-                <div class="exclusions-title">Exclude These Topics:</div>
-                
-                <label class="exclusion-item" onclick="toggleExclusion(this)">
-                    <input type="checkbox" class="exclusion-checkbox" data-category="bondage">
-                    <span class="exclusion-label">🔗 Bondage & BDSM</span>
-                </label>
-                
-                <label class="exclusion-item" onclick="toggleExclusion(this)">
-                    <input type="checkbox" class="exclusion-checkbox" data-category="public">
-                    <span class="exclusion-label">🌍 Public Activities</span>
-                </label>
-                
-                <label class="exclusion-item" onclick="toggleExclusion(this)">
-                    <input type="checkbox" class="exclusion-checkbox" data-category="roleplay">
-                    <span class="exclusion-label">🎭 Role Playing</span>
-                </label>
-                
-                <label class="exclusion-item" onclick="toggleExclusion(this)">
-                    <input type="checkbox" class="exclusion-checkbox" data-category="toys">
-                    <span class="exclusion-label">🧸 Toys & Accessories</span>
-                </label>
-                
-                <label class="exclusion-item" onclick="toggleExclusion(this)">
-                    <input type="checkbox" class="exclusion-checkbox" data-category="voyeur">
-                    <span class="exclusion-label">👀 Watching & Recording</span>
-                </label>
-                
-                <label class="exclusion-item" onclick="toggleExclusion(this)">
-                    <input type="checkbox" class="exclusion-checkbox" data-category="taboo" checked>
-                    <span class="exclusion-label">🚫 Taboo & Extreme</span>
-                </label>
-            </div>
-            
-            <button class="continue-btn" onclick="saveSettingsAndContinue()">
-                Start Playing
-            </button>
-        </div>
-    </div>
-
-    <!-- Main App -->
-    <div class="container">
-        <div class="header">
-            <h1 class="title">Erotic Date Nigh</h1>
-            <p class="subtitle">A sophisticated game for adventurous couples</p>
-        </div>
-
-        <div class="current-settings" id="currentSettings">
-            <span>Current Level: <strong>Spicy</strong></span>
-            <button class="settings-btn" onclick="showSettings()">Change</button>
-        </div>
-
-        <div class="player-turn">
-            <div class="current-player" id="currentPlayerDisplay">Player 1's Turn</div>
-            <div class="turn-counter" id="turnCounter">Turn #1</div>
-        </div>
-
-        <div class="game-area">
-            <div class="action-buttons">
-                <button class="action-btn clothing" onclick="takeAction('Remove Clothing')" aria-label="Remove piece of clothing">
-                    <span class="btn-emoji">🔥</span>
-                    <span class="btn-text">Remove Clothing</span>
-                </button>
-                
-                <button class="action-btn drink" onclick="takeAction('Take a Sip')" aria-label="Take a sip of drink">
-                    <span class="btn-emoji">🥂</span>
-                    <span class="btn-text">Take a Sip</span>
-                </button>
-                
-                <button class="action-btn shot" onclick="takeAction('Take a Shot')" aria-label="Take a shot">
-                    <span class="btn-emoji">🍸</span>
-                    <span class="btn-text">Take a Shot</span>
-                </button>
-                
-                <button class="action-btn question" onclick="takeAction('Question')" aria-label="Answer a spicy question">
-                    <span class="btn-emoji">💋</span>
-                    <span class="btn-text">Will You Ever...</span>
-                </button>
-                
-                <button class="action-btn fate" onclick="takeAction('Let Fate Decide')" aria-label="Let fate choose your action">
-                    <span class="btn-emoji">🔮</span>
-                    <span class="btn-text">Let Fate Decide</span>
-                </button>
-            </div>
-
-            <div class="question-display" id="questionDisplay">
-                <div class="question-title">Will You Ever...</div>
-                <div class="question-text" id="questionText"></div>
-                <div style="text-align: center; margin-top: 15px;">
-                    <span class="question-intensity" id="questionIntensity"></span>
-                </div>
-                
-                <div class="question-actions" id="questionActions">
-                    <div class="answer-buttons">
-                        <button class="answer-btn yes-btn" onclick="answerQuestion('yes')">
-                            <span class="answer-emoji">💋</span>
-                            <span class="answer-text">Hell Yes!</span>
-                        </button>
-                        <button class="answer-btn no-btn" onclick="answerQuestion('no')">
-                            <span class="answer-emoji">😈</span>
-                            <span class="answer-text">Not Tonight</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="question-result" id="questionResult" style="display: none;">
-                    <div class="result-icon" id="resultIcon"></div>
-                    <div class="result-message" id="resultMessage"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <h3 class="settings-title-main">Settings</h3>
-            
-            <div class="player-names-main">
-                <input type="text" class="player-input-main" id="player1Name" placeholder="Player 1 Name" maxlength="20">
-                <input type="text" class="player-input-main" id="player2Name" placeholder="Player 2 Name" maxlength="20">
-            </div>
-            
-            <button class="submit-btn" onclick="updatePlayerNames()">Update Names</button>
-            <button class="settings-btn" onclick="showSettings()" style="margin-left: 15px;">Change Game Settings</button>
-        </div>
-    </div>
-
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <div>Loading...</div>
-    </div>
-
-    <div class="notification" id="notification"></div>
-
-    <script>
-        // Configuration - REPLACE WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzmH-KMHEc1xqs6PPORu7q5Y1eeA7PfQCuLl0DmZffhhW2maSDxZq_WiEBhjGafgl9T/exec';
-        
-        // Game State - CLEAN VERSION
-        let gameState = {
-            currentPlayer: 'Player1',
-            totalTurns: 0,
-            player1Name: 'Player 1',
-            player2Name: 'Player 2',
-            spiceLevel: 2,
-            excludedCategories: ['taboo'],
-            sessionID: generateSessionID()
-            // REMOVED: actionTaken, questionAnswered, etc. - we'll handle these locally
-        };
-
-        // LOCAL action state (not saved to storage)
-        let currentTurnState = {
-            actionTaken: false,
-            questionAnswered: false,
-            currentQuestion: '',
-            questionAnswer: ''
-        };
-
-        // Comprehensive Questions Database (organized by spice level and category)
-        const questionsDatabase = {
-            1: { // Romantic
-                general: [
-                    "Will you ever let me give you a sensual massage tonight?",
-                    "Will you ever tell me what makes you feel most loved?",
-                    "Will you ever dance with me in just our underwear?",
-                    "Will you ever let me undress you slowly by candlelight?",
-                    "Will you ever let me worship your body with kisses?",
-                    "Will you ever write me a love letter describing your desires?"
-                ],
-                fantasy: [
-                    "Will you ever share your most romantic fantasy with me?",
-                    "Will you ever tell me about your dream romantic getaway?",
-                    "Will you ever describe how you want to be seduced?"
-                ]
-            },
-            2: { // Spicy  
-                general: [
-                    "Will you ever let me choose what you wear to bed tonight?",
-                    "Will you ever try that position we talked about?",
-                    "Will you ever tell me your secret turn-on?",
-                    "Will you ever let me tease you until you can't take it?",
-                    "Will you ever skinny dip with me tonight?",
-                    "Will you ever let me wake you up with oral sex?",
-                    "Will you ever have sex with me in the shower?",
-                    "Will you ever let me see you completely naked in daylight?",
-                    "Will you ever tell me what you want me to do to you right now?",
-                    "Will you ever try making love without saying a word?"
-                ],
-                fantasy: [
-                    "Will you ever tell me your dirtiest fantasy?",
-                    "Will you ever share what you think about when you touch yourself?",
-                    "Will you ever describe your perfect night of passion?"
-                ],
-                voyeur: [
-                    "Will you ever let me watch you touch yourself?",
-                    "Will you ever show me how you like to be touched?",
-                    "Will you ever let me take photos of you in lingerie?",
-                    "Will you ever send me a sexy photo when I'm at work?"
-                ]
-            },
-            3: { // Intense
-                general: [
-                    "Will you ever try anal with me?",
-                    "Will you ever let me tease you until you can't take it?",
-                    "Will you ever try edging with me?",
-                    "Will you ever let me use ice on your body?",
-                    "Will you ever let me completely dominate you tonight?"
-                ],
-                bondage: [
-                    "Will you ever let me tie your hands behind your back?",
-                    "Will you ever let me blindfold you during foreplay?",
-                    "Will you ever let me use handcuffs on you?",
-                    "Will you ever try being completely submissive to me?",
-                    "Will you ever let me spank you?",
-                    "Will you ever let me control when you climax?"
-                ],
-                public: [
-                    "Will you ever let me pleasure you in a public place?",
-                    "Will you ever risk getting caught with me?",
-                    "Will you ever try having sex in a risky location?",
-                    "Will you ever have sex with me while others are nearby?"
-                ],
-                toys: [
-                    "Will you ever use toys with me?",
-                    "Will you ever let me control your pleasure with a toy?",
-                    "Will you ever experiment with different toys together?"
-                ],
-                roleplay: [
-                    "Will you ever role-play being strangers meeting for the first time?",
-                    "Will you ever dress up in costume for me?",
-                    "Will you ever pretend to be someone else in bed?"
-                ],
-                voyeur: [
-                    "Will you ever let me record us (just for us)?",
-                    "Will you ever moan my name while I watch you?",
-                    "Will you ever perform for me like I'm your audience?"
-                ]
-            },
-            4: { // Extreme  
-                general: [
-                    "Will you ever try something that pushes both our boundaries?",
-                    "Will you ever explore your darkest desires with me?"
-                ],
-                bondage: [
-                    "Will you ever try pain mixed with pleasure?",
-                    "Will you ever experiment with power exchange scenarios?",
-                    "Will you ever let me have complete control over your body?"
-                ],
-                toys: [
-                    "Will you ever try double penetration with toys?",
-                    "Will you ever experiment with extreme toys?"
-                ],
-                taboo: [
-                    "Will you ever try taboo role-playing scenarios?",
-                    "Will you ever explore forbidden fantasies with me?",
-                    "Will you ever let me fulfill your most secret desire?"
-                ]
-            }
-        };
-
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', function() {
-            loadGameState();
-            
-            // Check if players have been set up
-            if (!gameState.player1Name || gameState.player1Name === 'Player 1' || 
-                !gameState.player2Name || gameState.player2Name === 'Player 2') {
-                showPlayerSetup();
-            } else if (!localStorage.getItem('eroticDateNighSettings')) {
-                showSettings();
-            } else {
-                updateDisplay();
-            }
-
-            // Register service worker for PWA functionality
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('data:text/javascript,// Minimal service worker').catch(() => {
-                    // Service worker registration failed - continue without PWA features
-                });
-            }
-        });
-
-        // Player Setup Functions
-        function showPlayerSetup() {
-            document.getElementById('playerSetupOverlay').classList.remove('hidden');
-        }
-
-        function savePlayerNamesAndContinue() {
-            const player1 = document.getElementById('setupPlayer1Name').value.trim();
-            const player2 = document.getElementById('setupPlayer2Name').value.trim();
-            
-            if (!player1 || !player2) {
-                showNotification('Please enter both player names!');
-                return;
-            }
-            
-            if (player1.toLowerCase() === player2.toLowerCase()) {
-                showNotification('Please use different names!');
-                return;
-            }
-            
-            gameState.player1Name = player1;
-            gameState.player2Name = player2;
-            
-            // Hide player setup
-            document.getElementById('playerSetupOverlay').classList.add('hidden');
-            
-            // Show settings if not already configured
-            if (!localStorage.getItem('eroticDateNighSettings')) {
-                showSettings();
-            } else {
-                updateDisplay();
-                showNotification(`Welcome ${player1} and ${player2}! Have fun!`);
-            }
-            
-            saveGameState();
-        }
-
-        // Utility Functions
-        function generateSessionID() {
-            return 'session_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
-        }
-
-        function showLoading(show = true) {
-            const loading = document.getElementById('loading');
-            if (show) {
-                loading.classList.add('show');
-            } else {
-                loading.classList.remove('show');
-            }
-        }
-
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        // Settings Functions
-        function selectSpiceLevel(level) {
-            gameState.spiceLevel = level;
-            
-            // Update visual selection
-            document.querySelectorAll('.spice-level').forEach(el => {
-                el.classList.remove('selected');
-            });
-            document.querySelector(`[data-level="${level}"]`).classList.add('selected');
-        }
-
-        function toggleExclusion(labelElement) {
-            // Prevent double-firing from both label and checkbox
-            setTimeout(() => {
-                const checkbox = labelElement.querySelector('.exclusion-checkbox');
-                if (checkbox) {
-                    labelElement.style.background = checkbox.checked ? 
-                        'rgba(255, 255, 255, 0.15)' : 
-                        'rgba(255, 255, 255, 0.05)';
-                }
-            }, 10);
-        }
-
-        function showSettings() {
-            document.getElementById('settingsOverlay').classList.remove('hidden');
-            
-            // Update current selections
-            document.querySelector(`[data-level="${gameState.spiceLevel}"]`).classList.add('selected');
-            
-            // Update exclusion checkboxes
-            gameState.excludedCategories.forEach(category => {
-                const checkbox = document.querySelector(`[data-category="${category}"]`);
-                if (checkbox) {
-                    checkbox.checked = true;
-                    checkbox.closest('.exclusion-item').style.background = 'rgba(255, 255, 255, 0.15)';
-                }
-            });
-        }
-
-        function saveSettingsAndContinue() {
-            // Get excluded categories
-            const excludedCategories = [];
-            document.querySelectorAll('.exclusion-checkbox:checked').forEach(checkbox => {
-                excludedCategories.push(checkbox.dataset.category);
-            });
-            
-            gameState.excludedCategories = excludedCategories;
-            
-            // Save to localStorage
-            localStorage.setItem('eroticDateNighSettings', JSON.stringify({
-                spiceLevel: gameState.spiceLevel,
-                excludedCategories: gameState.excludedCategories
-            }));
-            
-            // Save preferences to backend if connected
-            saveUserPreferences();
-            
-            // Hide overlay and update display
-            document.getElementById('settingsOverlay').classList.add('hidden');
-            updateCurrentSettingsDisplay();
-            updateDisplay();
-            
-            showNotification('Settings saved! Enjoy your customized experience.');
-        }
-
-        function updateCurrentSettingsDisplay() {
-            const levels = {1: 'Romantic', 2: 'Spicy', 3: 'Intense', 4: 'Extreme'};
-            const levelName = levels[gameState.spiceLevel];
-            
-            document.getElementById('currentSettings').innerHTML = `
-                <span>Current Level: <strong>${levelName}</strong></span>
-                <button class="settings-btn" onclick="showSettings()">Change</button>
-            `;
-        }
-
-        // Game Functions
-        function updateDisplay() {
-            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
-            document.getElementById('currentPlayerDisplay').textContent = currentPlayerName + "'s Turn";
-            document.getElementById('turnCounter').textContent = `Turn #${gameState.totalTurns + 1}`;
-            
-            // Update player name inputs in settings
-            document.getElementById('player1Name').value = gameState.player1Name;
-            document.getElementById('player2Name').value = gameState.player2Name;
-            
-            // Hide any open question displays
-            document.getElementById('questionDisplay').classList.remove('show');
-            
-            updateCurrentSettingsDisplay();
-        }
-
-        // Local Storage Functions - DON'T save action state
-        function saveGameState() {
-            try {
-                // Only save persistent game state, NOT current turn state
-                const stateToSave = {
-                    currentPlayer: gameState.currentPlayer,
-                    totalTurns: gameState.totalTurns,
-                    player1Name: gameState.player1Name,
-                    player2Name: gameState.player2Name,
-                    spiceLevel: gameState.spiceLevel,
-                    excludedCategories: gameState.excludedCategories,
-                    sessionID: gameState.sessionID
-                };
-                localStorage.setItem('eroticDateNighGameState', JSON.stringify(stateToSave));
-            } catch (error) {
-                console.log('Could not save game state locally');
-            }
-        }
-
-        function loadGameState() {
-            try {
-                const saved = localStorage.getItem('eroticDateNighGameState');
-                const savedSettings = localStorage.getItem('eroticDateNighSettings');
-                
-                if (saved) {
-                    const parsedState = JSON.parse(saved);
-                    // Only restore persistent state
-                    gameState.currentPlayer = parsedState.currentPlayer || 'Player1';
-                    gameState.totalTurns = parsedState.totalTurns || 0;
-                    gameState.player1Name = parsedState.player1Name || 'Player 1';
-                    gameState.player2Name = parsedState.player2Name || 'Player 2';
-                    gameState.spiceLevel = parsedState.spiceLevel || 2;
-                    gameState.excludedCategories = parsedState.excludedCategories || ['taboo'];
-                    gameState.sessionID = parsedState.sessionID || generateSessionID();
-                }
-                
-                if (savedSettings) {
-                    const settings = JSON.parse(savedSettings);
-                    gameState.spiceLevel = settings.spiceLevel || 2;
-                    gameState.excludedCategories = settings.excludedCategories || ['taboo'];
-                }
-                
-                // ALWAYS reset turn state on load
-                currentTurnState = {
-                    actionTaken: false,
-                    questionAnswered: false,
-                    currentQuestion: '',
-                    questionAnswer: ''
-                };
-                
-                console.log('Game state loaded, turn state reset');
-                
-            } catch (error) {
-                console.log('Could not load saved data, using defaults');
-            }
-        }
-
-        function getFilteredQuestion() {
-            const availableQuestions = [];
-            const levelQuestions = questionsDatabase[gameState.spiceLevel] || {};
-            
-            // Get questions from all categories not excluded
-            Object.keys(levelQuestions).forEach(category => {
-                if (!gameState.excludedCategories.includes(category)) {
-                    availableQuestions.push(...levelQuestions[category]);
-                }
-            });
-            
-            // Fallback to general questions if no categories available
-            if (availableQuestions.length === 0 && levelQuestions.general) {
-                availableQuestions.push(...levelQuestions.general);
-            }
-            
-            // Ultimate fallback
-            if (availableQuestions.length === 0) {
-                return "Will you ever make this night unforgettable?";
-            }
-            
-            // Return random question
-            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-            return availableQuestions[randomIndex];
-        }
-
-        async function takeAction(action) {
-            if (gameState.actionTaken) {
-                showNotification('Already took an action this turn!');
-                return;
-            }
-
-            gameState.actionTaken = true;
-            gameState.lastAction = action;
-            
-            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
-            
-            if (action === 'Question') {
-                const question = getFilteredQuestion();
-                gameState.currentQuestion = question;
-                const levels = {1: 'Romantic', 2: 'Spicy', 3: 'Intense', 4: 'Extreme'};
-                
-                document.getElementById('questionText').textContent = question;
-                document.getElementById('questionIntensity').textContent = levels[gameState.spiceLevel];
-                document.getElementById('questionDisplay').classList.add('show');
-                
-                // Show the question actions
-                document.getElementById('questionActions').style.display = 'block';
-                document.getElementById('questionResult').style.display = 'none';
-                
-                showNotification(`${currentPlayerName}, will you answer this ${levels[gameState.spiceLevel].toLowerCase()} question?`);
-                
-                // Don't enable next turn until question is answered
-                document.getElementById('nextTurnBtn').disabled = true;
-            } else {
-                showNotification(`${currentPlayerName} chose: ${action}`);
-                await logAction(currentPlayerName, action);
-                
-                // Enable next turn button for non-question actions
-                const nextBtn = document.getElementById('nextTurnBtn');
-                nextBtn.disabled = false;
-                nextBtn.classList.add('pulse');
-            }
-        }
-
-        async function answerQuestion(answer) {
-            if (gameState.questionAnswered) {
-                return; // Prevent double-clicking
-            }
-            
-            gameState.questionAnswered = true;
-            gameState.questionAnswer = answer;
-            
-            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
-            
-            // Hide question actions
-            document.getElementById('questionActions').style.display = 'none';
-            
-            // Show result
-            showQuestionResult(answer, false);
-            
-            // Log the answer to backend
-            await logAction(currentPlayerName, 'Question', gameState.currentQuestion, answer);
-            
-            // Enable next turn button
-            const nextBtn = document.getElementById('nextTurnBtn');
-            nextBtn.disabled = false;
-            nextBtn.classList.add('pulse');
-            
-            // Trigger haptic feedback
-            triggerHapticFeedback();
-        }
-
-        async function letFateDecide() {
-            if (gameState.questionAnswered) {
-                return; // Prevent double-clicking
-            }
-            
-            // Add spinning animation
-            const fateBtn = document.getElementById('fateDecideBtn');
-            fateBtn.classList.add('spinning');
-            fateBtn.disabled = true;
-            
-            // Wait for animation
-            setTimeout(async () => {
-                const choices = ['yes', 'no'];
-                const fateAnswer = choices[Math.floor(Math.random() * choices.length)];
-                
-                gameState.questionAnswered = true;
-                gameState.questionAnswer = fateAnswer;
-                
-                const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
-                
-                // Hide question actions
-                document.getElementById('questionActions').style.display = 'none';
-                
-                // Show result
-                showQuestionResult(fateAnswer, true);
-                
-                // Log the answer to backend
-                await logAction(currentPlayerName, 'Question', gameState.currentQuestion, `fate-${fateAnswer}`);
-                
-                // Enable next turn button
-                const nextBtn = document.getElementById('nextTurnBtn');
-                nextBtn.disabled = false;
-                nextBtn.classList.add('pulse');
-                
-                // Remove spinning animation
-                fateBtn.classList.remove('spinning');
-                fateBtn.disabled = false;
-                
-                // Trigger haptic feedback
-                triggerHapticFeedback();
-            }, 800);
-        }
-
-        function showQuestionResult(answer, wasFate = false) {
-            const resultDiv = document.getElementById('questionResult');
-            const resultIcon = document.getElementById('resultIcon');
-            const resultMessage = document.getElementById('resultMessage');
-            
-            resultDiv.style.display = 'block';
-            
-            if (answer === 'yes') {
-                resultDiv.className = 'question-result yes-result';
-                resultIcon.textContent = wasFate ? '🎲💋' : '💋';
-                resultMessage.textContent = wasFate ? 'Fate says... Hell Yes!' : 'Hell Yes!';
-            } else {
-                resultDiv.className = 'question-result no-result';
-                resultIcon.textContent = wasFate ? '🎲😈' : '😈';
-                resultMessage.textContent = wasFate ? 'Fate says... Not Tonight!' : 'Not Tonight!';
-            }
-            
-            if (wasFate) {
-                const fateMessages = {
-                    yes: [
-                        'The universe wants you to be bold!',
-                        'Destiny has spoken... go for it!',
-                        'Fate is feeling spicy tonight!',
-                        'The stars align for adventure!'
-                    ],
-                    no: [
-                        'Maybe save this one for later...',
-                        'Fate suggests building more anticipation!',
-                        'The universe says timing is everything!',
-                        'Not tonight, but who knows what tomorrow brings!'
-                    ]
-                };
-                
-                const messages = fateMessages[answer];
-                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-                
-                setTimeout(() => {
-                    resultMessage.textContent = randomMessage;
-                }, 1500);
-            }
-        }
-
-        async function nextTurn() {
-            if (!gameState.actionTaken) {
-                showNotification('Take an action first!');
-                return;
-            }
-            
-            // Switch players
-            gameState.currentPlayer = gameState.currentPlayer === 'Player1' ? 'Player2' : 'Player1';
-            gameState.totalTurns++;
-            
-            // Update display
-            updateDisplay();
-            showNotification('Turn switched!');
-            
-            // Save state
-            saveGameState();
-        }
-
-        // Backend Communication
-        async function logAction(playerName, action, question = '', answer = '') {
-            try {
-                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            action: 'logGameAction',
-                            playerName: playerName,
-                            gameAction: action,
-                            question: question,
-                            answer: answer,
-                            spiceLevel: gameState.spiceLevel,
-                            excludedCategories: gameState.excludedCategories,
-                            sessionID: gameState.sessionID
-                        })
-                    });
-                }
-            } catch (error) {
-                console.log('Could not log to backend:', error);
-                // Continue without backend - app works offline
-            }
-        }
-
-        async function saveUserPreferences() {
-            try {
-                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            action: 'saveUserPreferences',
-                            spiceLevel: gameState.spiceLevel,
-                            excludedCategories: gameState.excludedCategories,
-                            sessionID: gameState.sessionID
-                        })
-                    });
-                }
-            } catch (error) {
-                console.log('Could not save preferences to backend:', error);
-                // Continue without backend - preferences saved locally
-            }
-        }
-
-        // Local Storage Functions
-        function saveGameState() {
-            try {
-                localStorage.setItem('eroticDateNighGameState', JSON.stringify(gameState));
-            } catch (error) {
-                console.log('Could not save game state locally');
-            }
-        }
-
-        function loadGameState() {
-            try {
-                const saved = localStorage.getItem('eroticDateNighGameState');
-                const savedSettings = localStorage.getItem('eroticDateNighSettings');
-                
-                if (saved) {
-                    const parsedState = JSON.parse(saved);
-                    gameState = { ...gameState, ...parsedState };
-                }
-                
-                if (savedSettings) {
-                    const settings = JSON.parse(savedSettings);
-                    gameState.spiceLevel = settings.spiceLevel || 2;
-                    gameState.excludedCategories = settings.excludedCategories || ['taboo'];
-                }
-                
-                // Ensure session ID exists
-                if (!gameState.sessionID) {
-                    gameState.sessionID = generateSessionID();
-                }
-            } catch (error) {
-                console.log('Could not load saved data');
-                // Use default state
-            }
-        }
-
-        // Touch and Mobile Optimizations
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (event) {
-            const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-
-        // Prevent context menu on long press
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        // Add haptic feedback for supported devices
-        function triggerHapticFeedback() {
-            if ('vibrate' in navigator) {
-                navigator.vibrate(50);
-            }
-        }
-
-        // Add haptic feedback to button clicks
-        document.addEventListener('click', function(e) {
-            if (e.target.matches('.action-btn, .spice-level, .continue-btn, .next-turn-btn, .answer-btn, .random-choice-btn')) {
-                triggerHapticFeedback();
-            }
-        });
-
-        // Performance monitoring
-        if ('performance' in window) {
-            window.addEventListener('load', function() {
-                setTimeout(function() {
-                    const loadTime = performance.now();
-                    console.log(`App loaded in ${Math.round(loadTime)}ms`);
-                }, 0);
-            });
-        }
-
-        // Error handling
-        window.addEventListener('error', function(e) {
-            console.error('App error:', e.error);
-            showNotification('Something went wrong, but the app should still work!');
-        });
-
-        // Network status monitoring
-        if ('navigator' in window && 'onLine' in navigator) {
-            function updateOnlineStatus() {
-                if (!navigator.onLine) {
-                    showNotification('Offline mode - app still works locally!');
-                }
-            }
-            
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
-        }
-    </script>
-</body>
-</html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erotic Date Nigh</title>
+    <title>Erotic Date Night</title>
     <meta name="description" content="A sophisticated intimate game for adventurous couples">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -879,8 +11,8 @@
     
     <!-- PWA Configuration -->
     <link rel="manifest" href="data:application/json,{
-        &quot;name&quot;: &quot;Erotic Date Nigh&quot;,
-        &quot;short_name&quot;: &quot;Date Nigh&quot;,
+        &quot;name&quot;: &quot;Erotic Date Night&quot;,
+        &quot;short_name&quot;: &quot;Date Night&quot;,
         &quot;description&quot;: &quot;Sophisticated couples game&quot;,
         &quot;start_url&quot;: &quot;.&quot;,
         &quot;display&quot;: &quot;standalone&quot;,
@@ -1243,17 +375,72 @@
             gap: 20px;
         }
 
+        /* Spinning Wheel Styles */
+        .wheel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .play-button {
+            background: linear-gradient(135deg, var(--gold), #f4e4bc);
+            color: var(--black);
+            border: none;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .play-button:hover::before {
+            left: 100%;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(212, 175, 55, 0.6);
+        }
+
+        .play-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+        }
+
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr 1fr;
             gap: 15px;
             margin-bottom: 25px;
+            opacity: 1;
+            transition: all 0.3s ease;
         }
 
-        .action-btn.fate {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, #8a2be2, #4b0082);
+        .action-buttons.spinning {
+            pointer-events: none;
         }
 
         .action-btn {
@@ -1273,6 +460,39 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
+            transform: scale(1);
+        }
+
+        .action-btn.fate {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #8a2be2, #4b0082);
+        }
+
+        .action-btn.highlighted {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px var(--gold);
+            border: 3px solid var(--gold);
+            z-index: 10;
+        }
+
+        .action-btn.selected {
+            transform: scale(1.3);
+            box-shadow: 0 0 40px var(--gold);
+            border: 4px solid var(--gold);
+            z-index: 20;
+            animation: selectedPulse 0.6s ease-out;
+        }
+
+        .action-btn.shrinking {
+            transform: scale(0.8);
+            opacity: 0.7;
+            transition: all 0.5s ease;
+        }
+
+        @keyframes selectedPulse {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1.3); }
         }
 
         .action-btn::before {
@@ -1561,43 +781,6 @@
             color: var(--cream);
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes resultSlide {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes bounce {
-            0%, 20%, 53%, 80%, 100% {
-                transform: scale(1);
-            }
-            40%, 43% {
-                transform: scale(1.1);
-            }
-            70% {
-                transform: scale(1.05);
-            }
-            90% {
-                transform: scale(1.02);
-            }
-        }
-
         .next-turn-btn {
             background: linear-gradient(135deg, var(--deep-red), var(--burgundy));
             border: none;
@@ -1612,6 +795,11 @@
             margin-bottom: 20px;
             position: relative;
             overflow: hidden;
+            display: none;
+        }
+
+        .next-turn-btn.show {
+            display: block;
         }
 
         .next-turn-btn::before {
@@ -1632,21 +820,6 @@
         .next-turn-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4);
-        }
-
-        .next-turn-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .next-turn-btn:disabled:hover {
-            transform: none;
-            box-shadow: none;
-        }
-
-        .next-turn-btn:disabled::before {
-            display: none;
         }
 
         .pulse {
@@ -1736,6 +909,102 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes resultSlide {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                transform: scale(1);
+            }
+            40%, 43% {
+                transform: scale(1.1);
+            }
+            70% {
+                transform: scale(1.05);
+            }
+            90% {
+                transform: scale(1.02);
+            }
+        }
+
+        /* Settings Section */
+        .settings-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .settings-title-main {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .player-names-main {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .player-input-main {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--cream);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .player-input-main:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .player-input-main::placeholder {
+            color: rgba(245, 245, 220, 0.6);
+        }
+
+        .submit-btn {
+            background: var(--gold);
+            color: var(--black);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #f4e4bc;
+            transform: translateY(-1px);
+        }
+
         /* Responsive Design */
         @media (max-width: 480px) {
             .container { 
@@ -1778,6 +1047,12 @@
                 padding: 10px;
                 margin-bottom: 8px;
             }
+
+            .play-button {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
         }
 
         @media (max-width: 360px) {
@@ -1796,10 +1071,16 @@
             .exclusion-label {
                 font-size: 0.85rem;
             }
+
+            .play-button {
+                width: 90px;
+                height: 90px;
+                font-size: 2rem;
+            }
         }
 
         /* Performance optimizations */
-        .action-btn, .spice-level, .continue-btn, .next-turn-btn {
+        .action-btn, .spice-level, .continue-btn, .next-turn-btn, .play-button {
             will-change: transform;
         }
 
@@ -1813,12 +1094,1002 @@
         }
 
         /* Touch improvements for mobile */
-        .action-btn, .spice-level, .continue-btn, .settings-btn, .exclusion-item {
+        .action-btn, .spice-level, .continue-btn, .settings-btn, .exclusion-item, .play-button {
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
         }
 
-        /* Prevent zoom on input focus (iOS) */
-        input, textarea, select {
-            font-size: 16px;
+    </style>
+</head>
+<body>
+    <!-- Player Setup Overlay -->
+    <div class="settings-overlay" id="playerSetupOverlay">
+        <div class="settings-modal">
+            <h2 class="settings-title">Welcome to Erotic Date Night</h2>
+            
+            <div style="margin-bottom: 25px; text-align: center;">
+                <p style="color: var(--cream); margin-bottom: 20px;">Enter your names to get started:</p>
+                
+                <div class="player-names-setup">
+                    <input type="text" class="player-input" id="setupPlayer1Name" placeholder="Player 1 Name" maxlength="20">
+                    <input type="text" class="player-input" id="setupPlayer2Name" placeholder="Player 2 Name" maxlength="20">
+                </div>
+            </div>
+            
+            <button class="continue-btn" onclick="savePlayerNamesAndContinue()">
+                Continue to Game Settings
+            </button>
+        </div>
+    </div>
+
+    <!-- Settings Overlay -->
+    <div class="settings-overlay hidden" id="settingsOverlay">
+        <div class="settings-modal">
+            <h2 class="settings-title">Choose Your Experience</h2>
+            
+            <div class="spice-selector">
+                <div class="spice-level romantic" data-level="1" onclick="selectSpiceLevel(1)">
+                    <div>😊 Romantic</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Sensual & Sweet</div>
+                </div>
+                <div class="spice-level spicy selected" data-level="2" onclick="selectSpiceLevel(2)">
+                    <div>🔥 Spicy</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Passionate & Bold</div>
+                </div>
+                <div class="spice-level intense" data-level="3" onclick="selectSpiceLevel(3)">
+                    <div>🌶️ Intense</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Kinky & Explicit</div>
+                </div>
+                <div class="spice-level extreme" data-level="4" onclick="selectSpiceLevel(4)">
+                    <div>🔥🔥 Extreme</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">No Limits</div>
+                </div>
+            </div>
+            
+            <div class="exclusions-section">
+                <div class="exclusions-title">Exclude These Topics:</div>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="bondage">
+                    <span class="exclusion-label">🔗 Bondage & BDSM</span>
+                </label>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="public">
+                    <span class="exclusion-label">🌍 Public Activities</span>
+                </label>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="roleplay">
+                    <span class="exclusion-label">🎭 Role Playing</span>
+                </label>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="toys">
+                    <span class="exclusion-label">🧸 Toys & Accessories</span>
+                </label>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="voyeur">
+                    <span class="exclusion-label">👀 Watching & Recording</span>
+                </label>
+                
+                <label class="exclusion-item" onclick="toggleExclusion(this)">
+                    <input type="checkbox" class="exclusion-checkbox" data-category="taboo" checked>
+                    <span class="exclusion-label">🚫 Taboo & Extreme</span>
+                </label>
+            </div>
+            
+            <button class="continue-btn" onclick="saveSettingsAndContinue()">
+                Start Playing
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Erotic Date Night</h1>
+            <p class="subtitle">A sophisticated game for adventurous couples</p>
+        </div>
+
+        <div class="current-settings" id="currentSettings">
+            <span>Current Level: <strong>Spicy</strong></span>
+            <button class="settings-btn" onclick="showSettings()">Change</button>
+        </div>
+
+        <div class="player-turn">
+            <div class="current-player" id="currentPlayerDisplay">Player 1's Turn</div>
+            <div class="turn-counter" id="turnCounter">Turn #1</div>
+        </div>
+
+        <div class="game-area">
+            <!-- Spinning Wheel Section -->
+            <div class="wheel-container">
+                <button class="play-button" id="playButton" onclick="startSpinning()">
+                    🎮
+                </button>
+                
+                <div class="action-buttons" id="actionButtons">
+                    <button class="action-btn clothing" data-action="Remove Clothing" aria-label="Remove piece of clothing">
+                        <span class="btn-emoji">🔥</span>
+                        <span class="btn-text">Remove Clothing</span>
+                    </button>
+                    
+                    <button class="action-btn drink" data-action="Take a Sip" aria-label="Take a sip of drink">
+                        <span class="btn-emoji">🥂</span>
+                        <span class="btn-text">Take a Sip</span>
+                    </button>
+                    
+                    <button class="action-btn shot" data-action="Take a Shot" aria-label="Take a shot">
+                        <span class="btn-emoji">🍸</span>
+                        <span class="btn-text">Take a Shot</span>
+                    </button>
+                    
+                    <button class="action-btn question" data-action="Question" aria-label="Answer a spicy question">
+                        <span class="btn-emoji">💋</span>
+                        <span class="btn-text">Will You Ever...</span>
+                    </button>
+                    
+                    <button class="action-btn fate" data-action="Let Fate Decide" aria-label="Let fate choose your action">
+                        <span class="btn-emoji">🔮</span>
+                        <span class="btn-text">Let Fate Decide</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="question-display" id="questionDisplay">
+                <div class="question-title">Will You Ever...</div>
+                <div class="question-text" id="questionText"></div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <span class="question-intensity" id="questionIntensity"></span>
+                </div>
+                
+                <div class="question-actions" id="questionActions">
+                    <div class="answer-buttons">
+                        <button class="answer-btn yes-btn" onclick="answerQuestion('yes')">
+                            <span class="answer-emoji">💋</span>
+                            <span class="answer-text">Hell Yes!</span>
+                        </button>
+                        <button class="answer-btn no-btn" onclick="answerQuestion('no')">
+                            <span class="answer-emoji">😈</span>
+                            <span class="answer-text">Not Tonight</span>
+                        </button>
+                    </div>
+                    
+                    <button class="random-choice-btn" id="fateDecideBtn" onclick="letFateDecide()">
+                        <span class="random-emoji">🎲</span>
+                        <span class="random-text">Let Fate Decide</span>
+                    </button>
+                </div>
+                
+                <div class="question-result" id="questionResult" style="display: none;">
+                    <div class="result-icon" id="resultIcon"></div>
+                    <div class="result-message" id="resultMessage"></div>
+                </div>
+            </div>
+
+            <button class="next-turn-btn" id="nextTurnBtn" onclick="nextTurn()">
+                Next Player
+            </button>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-title-main">Settings</h3>
+            
+            <div class="player-names-main">
+                <input type="text" class="player-input-main" id="player1Name" placeholder="Player 1 Name" maxlength="20">
+                <input type="text" class="player-input-main" id="player2Name" placeholder="Player 2 Name" maxlength="20">
+            </div>
+            
+            <button class="submit-btn" onclick="updatePlayerNames()">Update Names</button>
+            <button class="settings-btn" onclick="showSettings()" style="margin-left: 15px;">Change Game Settings</button>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div>Loading...</div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Configuration - REPLACE WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzmH-KMHEc1xqs6PPORu7q5Y1eeA7PfQCuLl0DmZffhhW2maSDxZq_WiEBhjGafgl9T/exec';
+        
+        // Game State
+        let gameState = {
+            currentPlayer: 'Player1',
+            totalTurns: 0,
+            player1Name: 'Player 1',
+            player2Name: 'Player 2',
+            spiceLevel: 2,
+            excludedCategories: ['taboo'],
+            sessionID: generateSessionID(),
+            isSpinning: false,
+            actionTaken: false
+        };
+
+        // Spinning wheel state
+        let spinningState = {
+            currentHighlight: 0,
+            isSpinning: false,
+            spinSpeed: 150,
+            finalSelection: null
+        };
+
+        // Action buttons array for spinning
+        const actionElements = [];
+
+        // Comprehensive Questions Database (organized by spice level and category)
+        const questionsDatabase = {
+            1: { // Romantic
+                general: [
+                    "Will you ever let me give you a sensual massage tonight?",
+                    "Will you ever tell me what makes you feel most loved?",
+                    "Will you ever dance with me in just our underwear?",
+                    "Will you ever let me undress you slowly by candlelight?",
+                    "Will you ever let me worship your body with kisses?",
+                    "Will you ever write me a love letter describing your desires?"
+                ],
+                fantasy: [
+                    "Will you ever share your most romantic fantasy with me?",
+                    "Will you ever tell me about your dream romantic getaway?",
+                    "Will you ever describe how you want to be seduced?"
+                ]
+            },
+            2: { // Spicy  
+                general: [
+                    "Will you ever let me choose what you wear to bed tonight?",
+                    "Will you ever try that position we talked about?",
+                    "Will you ever tell me your secret turn-on?",
+                    "Will you ever let me tease you until you can't take it?",
+                    "Will you ever skinny dip with me tonight?",
+                    "Will you ever let me wake you up with oral sex?",
+                    "Will you ever have sex with me in the shower?",
+                    "Will you ever let me see you completely naked in daylight?",
+                    "Will you ever tell me what you want me to do to you right now?",
+                    "Will you ever try making love without saying a word?"
+                ],
+                fantasy: [
+                    "Will you ever tell me your dirtiest fantasy?",
+                    "Will you ever share what you think about when you touch yourself?",
+                    "Will you ever describe your perfect night of passion?"
+                ],
+                voyeur: [
+                    "Will you ever let me watch you touch yourself?",
+                    "Will you ever show me how you like to be touched?",
+                    "Will you ever let me take photos of you in lingerie?",
+                    "Will you ever send me a sexy photo when I'm at work?"
+                ]
+            },
+            3: { // Intense
+                general: [
+                    "Will you ever try anal with me?",
+                    "Will you ever let me tease you until you can't take it?",
+                    "Will you ever try edging with me?",
+                    "Will you ever let me use ice on your body?",
+                    "Will you ever let me completely dominate you tonight?"
+                ],
+                bondage: [
+                    "Will you ever let me tie your hands behind your back?",
+                    "Will you ever let me blindfold you during foreplay?",
+                    "Will you ever let me use handcuffs on you?",
+                    "Will you ever try being completely submissive to me?",
+                    "Will you ever let me spank you?",
+                    "Will you ever let me control when you climax?"
+                ],
+                public: [
+                    "Will you ever let me pleasure you in a public place?",
+                    "Will you ever risk getting caught with me?",
+                    "Will you ever try having sex in a risky location?",
+                    "Will you ever have sex with me while others are nearby?"
+                ],
+                toys: [
+                    "Will you ever use toys with me?",
+                    "Will you ever let me control your pleasure with a toy?",
+                    "Will you ever experiment with different toys together?"
+                ],
+                roleplay: [
+                    "Will you ever role-play being strangers meeting for the first time?",
+                    "Will you ever dress up in costume for me?",
+                    "Will you ever pretend to be someone else in bed?"
+                ],
+                voyeur: [
+                    "Will you ever let me record us (just for us)?",
+                    "Will you ever moan my name while I watch you?",
+                    "Will you ever perform for me like I'm your audience?"
+                ]
+            },
+            4: { // Extreme  
+                general: [
+                    "Will you ever try something that pushes both our boundaries?",
+                    "Will you ever explore your darkest desires with me?"
+                ],
+                bondage: [
+                    "Will you ever try pain mixed with pleasure?",
+                    "Will you ever experiment with power exchange scenarios?",
+                    "Will you ever let me have complete control over your body?"
+                ],
+                toys: [
+                    "Will you ever try double penetration with toys?",
+                    "Will you ever experiment with extreme toys?"
+                ],
+                taboo: [
+                    "Will you ever try taboo role-playing scenarios?",
+                    "Will you ever explore forbidden fantasies with me?",
+                    "Will you ever let me fulfill your most secret desire?"
+                ]
+            }
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGameState();
+            initializeActionElements();
+            
+            // Check if players have been set up
+            if (!gameState.player1Name || gameState.player1Name === 'Player 1' || 
+                !gameState.player2Name || gameState.player2Name === 'Player 2') {
+                showPlayerSetup();
+            } else if (!localStorage.getItem('eroticDateNightSettings')) {
+                showSettings();
+            } else {
+                updateDisplay();
+            }
+
+            // Register service worker for PWA functionality
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('data:text/javascript,// Minimal service worker').catch(() => {
+                    // Service worker registration failed - continue without PWA features
+                });
+            }
+        });
+
+        // Initialize action elements array for spinning
+        function initializeActionElements() {
+            const buttons = document.querySelectorAll('.action-btn');
+            actionElements.length = 0; // Clear array
+            buttons.forEach(btn => actionElements.push(btn));
         }
+
+        // SPINNING WHEEL FUNCTIONALITY
+        function startSpinning() {
+            if (spinningState.isSpinning || gameState.actionTaken) {
+                return;
+            }
+
+            spinningState.isSpinning = true;
+            gameState.isSpinning = true;
+            
+            // Disable play button
+            const playButton = document.getElementById('playButton');
+            playButton.disabled = true;
+            playButton.style.opacity = '0.7';
+            
+            // Add spinning class to action buttons container
+            document.getElementById('actionButtons').classList.add('spinning');
+            
+            // Start the spinning animation
+            spinWheel();
+        }
+
+        function spinWheel() {
+            const totalSpins = 15 + Math.floor(Math.random() * 10); // 15-25 total highlights
+            let currentSpin = 0;
+            let currentSpeed = 100; // Start fast
+            
+            function highlightNext() {
+                // Remove previous highlight
+                actionElements.forEach(btn => btn.classList.remove('highlighted'));
+                
+                // Highlight current button
+                actionElements[spinningState.currentHighlight].classList.add('highlighted');
+                
+                // Play sound effect (haptic feedback)
+                triggerHapticFeedback();
+                
+                // Move to next button
+                spinningState.currentHighlight = (spinningState.currentHighlight + 1) % actionElements.length;
+                currentSpin++;
+                
+                // Slow down as we approach the end
+                if (currentSpin > totalSpins * 0.7) {
+                    currentSpeed += 50; // Slow down
+                }
+                
+                if (currentSpin < totalSpins) {
+                    setTimeout(highlightNext, currentSpeed);
+                } else {
+                    // Spinning is done, select the final option
+                    selectFinalAction();
+                }
+            }
+            
+            highlightNext();
+        }
+
+        function selectFinalAction() {
+            // Remove all highlights
+            actionElements.forEach(btn => btn.classList.remove('highlighted'));
+            
+            // Select the final button (go back one since we incremented)
+            const finalIndex = (spinningState.currentHighlight - 1 + actionElements.length) % actionElements.length;
+            const selectedButton = actionElements[finalIndex];
+            
+            // Add selected class with animation
+            selectedButton.classList.add('selected');
+            
+            // Trigger strong haptic feedback
+            if ('vibrate' in navigator) {
+                navigator.vibrate([100, 50, 100]);
+            }
+            
+            // Get the action from the button
+            const action = selectedButton.dataset.action;
+            spinningState.finalSelection = action;
+            
+            // Show selection for 2 seconds, then execute
+            setTimeout(() => {
+                executeSelectedAction(action, selectedButton);
+            }, 2000);
+        }
+
+        function executeSelectedAction(action, buttonElement) {
+            // Remove selected class and add shrinking
+            buttonElement.classList.remove('selected');
+            buttonElement.classList.add('shrinking');
+            
+            // Mark action as taken
+            gameState.actionTaken = true;
+            
+            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
+            
+            if (action === 'Question') {
+                const question = getFilteredQuestion();
+                gameState.currentQuestion = question;
+                const levels = {1: 'Romantic', 2: 'Spicy', 3: 'Intense', 4: 'Extreme'};
+                
+                document.getElementById('questionText').textContent = question;
+                document.getElementById('questionIntensity').textContent = levels[gameState.spiceLevel];
+                document.getElementById('questionDisplay').classList.add('show');
+                
+                // Show the question actions
+                document.getElementById('questionActions').style.display = 'block';
+                document.getElementById('questionResult').style.display = 'none';
+                
+                showNotification(`${currentPlayerName}, answer this ${levels[gameState.spiceLevel].toLowerCase()} question!`);
+                
+            } else {
+                showNotification(`${currentPlayerName} must: ${action}`);
+                logAction(currentPlayerName, action);
+                
+                // Show next turn button after a delay
+                setTimeout(() => {
+                    showNextTurnButton();
+                }, 1500);
+            }
+            
+            // Reset spinning state
+            resetSpinningState();
+        }
+
+        function resetSpinningState() {
+            spinningState.isSpinning = false;
+            gameState.isSpinning = false;
+            spinningState.currentHighlight = 0;
+            
+            // Re-enable play button for next turn (will be hidden until next turn)
+            const playButton = document.getElementById('playButton');
+            playButton.disabled = false;
+            playButton.style.opacity = '1';
+            
+            // Remove spinning class
+            document.getElementById('actionButtons').classList.remove('spinning');
+            
+            // Remove all button states
+            actionElements.forEach(btn => {
+                btn.classList.remove('highlighted', 'selected', 'shrinking');
+            });
+        }
+
+        function showNextTurnButton() {
+            const nextBtn = document.getElementById('nextTurnBtn');
+            nextBtn.classList.add('show', 'pulse');
+        }
+
+        // Player Setup Functions
+        function showPlayerSetup() {
+            document.getElementById('playerSetupOverlay').classList.remove('hidden');
+        }
+
+        function savePlayerNamesAndContinue() {
+            const player1 = document.getElementById('setupPlayer1Name').value.trim();
+            const player2 = document.getElementById('setupPlayer2Name').value.trim();
+            
+            if (!player1 || !player2) {
+                showNotification('Please enter both player names!');
+                return;
+            }
+            
+            if (player1.toLowerCase() === player2.toLowerCase()) {
+                showNotification('Please use different names!');
+                return;
+            }
+            
+            gameState.player1Name = player1;
+            gameState.player2Name = player2;
+            
+            // Hide player setup
+            document.getElementById('playerSetupOverlay').classList.add('hidden');
+            
+            // Show settings if not already configured
+            if (!localStorage.getItem('eroticDateNightSettings')) {
+                showSettings();
+            } else {
+                updateDisplay();
+                showNotification(`Welcome ${player1} and ${player2}! Press PLAY to start!`);
+            }
+            
+            saveGameState();
+        }
+
+        // Utility Functions
+        function generateSessionID() {
+            return 'session_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function showLoading(show = true) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Settings Functions
+        function selectSpiceLevel(level) {
+            gameState.spiceLevel = level;
+            
+            // Update visual selection
+            document.querySelectorAll('.spice-level').forEach(el => {
+                el.classList.remove('selected');
+            });
+            document.querySelector(`[data-level="${level}"]`).classList.add('selected');
+        }
+
+        function toggleExclusion(labelElement) {
+            // Prevent double-firing from both label and checkbox
+            setTimeout(() => {
+                const checkbox = labelElement.querySelector('.exclusion-checkbox');
+                if (checkbox) {
+                    labelElement.style.background = checkbox.checked ? 
+                        'rgba(255, 255, 255, 0.15)' : 
+                        'rgba(255, 255, 255, 0.05)';
+                }
+            }, 10);
+        }
+
+        function showSettings() {
+            document.getElementById('settingsOverlay').classList.remove('hidden');
+            
+            // Update current selections
+            document.querySelector(`[data-level="${gameState.spiceLevel}"]`).classList.add('selected');
+            
+            // Update exclusion checkboxes
+            gameState.excludedCategories.forEach(category => {
+                const checkbox = document.querySelector(`[data-category="${category}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.closest('.exclusion-item').style.background = 'rgba(255, 255, 255, 0.15)';
+                }
+            });
+        }
+
+        function saveSettingsAndContinue() {
+            // Get excluded categories
+            const excludedCategories = [];
+            document.querySelectorAll('.exclusion-checkbox:checked').forEach(checkbox => {
+                excludedCategories.push(checkbox.dataset.category);
+            });
+            
+            gameState.excludedCategories = excludedCategories;
+            
+            // Save to localStorage
+            localStorage.setItem('eroticDateNightSettings', JSON.stringify({
+                spiceLevel: gameState.spiceLevel,
+                excludedCategories: gameState.excludedCategories
+            }));
+            
+            // Save preferences to backend if connected
+            saveUserPreferences();
+            
+            // Hide overlay and update display
+            document.getElementById('settingsOverlay').classList.add('hidden');
+            updateCurrentSettingsDisplay();
+            updateDisplay();
+            
+            showNotification('Settings saved! Press PLAY to begin your adventure!');
+        }
+
+        function updateCurrentSettingsDisplay() {
+            const levels = {1: 'Romantic', 2: 'Spicy', 3: 'Intense', 4: 'Extreme'};
+            const levelName = levels[gameState.spiceLevel];
+            
+            document.getElementById('currentSettings').innerHTML = `
+                <span>Current Level: <strong>${levelName}</strong></span>
+                <button class="settings-btn" onclick="showSettings()">Change</button>
+            `;
+        }
+
+        // Game Functions
+        function updateDisplay() {
+            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
+            document.getElementById('currentPlayerDisplay').textContent = currentPlayerName + "'s Turn";
+            document.getElementById('turnCounter').textContent = `Turn #${gameState.totalTurns + 1}`;
+            
+            // Update player name inputs in settings
+            document.getElementById('player1Name').value = gameState.player1Name;
+            document.getElementById('player2Name').value = gameState.player2Name;
+            
+            // Hide any open question displays
+            document.getElementById('questionDisplay').classList.remove('show');
+            document.getElementById('nextTurnBtn').classList.remove('show', 'pulse');
+            
+            updateCurrentSettingsDisplay();
+            
+            // Reset action taken state for new turn
+            gameState.actionTaken = false;
+        }
+
+        function updatePlayerNames() {
+            const player1 = document.getElementById('player1Name').value.trim();
+            const player2 = document.getElementById('player2Name').value.trim();
+            
+            if (!player1 || !player2) {
+                showNotification('Please enter both player names!');
+                return;
+            }
+            
+            if (player1.toLowerCase() === player2.toLowerCase()) {
+                showNotification('Please use different names!');
+                return;
+            }
+            
+            gameState.player1Name = player1;
+            gameState.player2Name = player2;
+            
+            updateDisplay();
+            saveGameState();
+            showNotification('Player names updated!');
+        }
+
+        function getFilteredQuestion() {
+            const availableQuestions = [];
+            const levelQuestions = questionsDatabase[gameState.spiceLevel] || {};
+            
+            // Get questions from all categories not excluded
+            Object.keys(levelQuestions).forEach(category => {
+                if (!gameState.excludedCategories.includes(category)) {
+                    availableQuestions.push(...levelQuestions[category]);
+                }
+            });
+            
+            // Fallback to general questions if no categories available
+            if (availableQuestions.length === 0 && levelQuestions.general) {
+                availableQuestions.push(...levelQuestions.general);
+            }
+            
+            // Ultimate fallback
+            if (availableQuestions.length === 0) {
+                return "Will you ever make this night unforgettable?";
+            }
+            
+            // Return random question
+            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+            return availableQuestions[randomIndex];
+        }
+
+        async function answerQuestion(answer) {
+            if (gameState.questionAnswered) {
+                return; // Prevent double-clicking
+            }
+            
+            gameState.questionAnswered = true;
+            gameState.questionAnswer = answer;
+            
+            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
+            
+            // Hide question actions
+            document.getElementById('questionActions').style.display = 'none';
+            
+            // Show result
+            showQuestionResult(answer, false);
+            
+            // Log the answer to backend
+            await logAction(currentPlayerName, 'Question', gameState.currentQuestion, answer);
+            
+            // Show next turn button after delay
+            setTimeout(() => {
+                showNextTurnButton();
+            }, 2000);
+            
+            // Trigger haptic feedback
+            triggerHapticFeedback();
+        }
+
+        async function letFateDecide() {
+            if (gameState.questionAnswered) {
+                return; // Prevent double-clicking
+            }
+            
+            // Add spinning animation
+            const fateBtn = document.getElementById('fateDecideBtn');
+            fateBtn.classList.add('spinning');
+            fateBtn.disabled = true;
+            
+            // Wait for animation
+            setTimeout(async () => {
+                const choices = ['yes', 'no'];
+                const fateAnswer = choices[Math.floor(Math.random() * choices.length)];
+                
+                gameState.questionAnswered = true;
+                gameState.questionAnswer = fateAnswer;
+                
+                const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
+                
+                // Hide question actions
+                document.getElementById('questionActions').style.display = 'none';
+                
+                // Show result
+                showQuestionResult(fateAnswer, true);
+                
+                // Log the answer to backend
+                await logAction(currentPlayerName, 'Question', gameState.currentQuestion, `fate-${fateAnswer}`);
+                
+                // Show next turn button after delay
+                setTimeout(() => {
+                    showNextTurnButton();
+                }, 2000);
+                
+                // Remove spinning animation
+                fateBtn.classList.remove('spinning');
+                fateBtn.disabled = false;
+                
+                // Trigger haptic feedback
+                triggerHapticFeedback();
+            }, 800);
+        }
+
+        function showQuestionResult(answer, wasFate = false) {
+            const resultDiv = document.getElementById('questionResult');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultMessage = document.getElementById('resultMessage');
+            
+            resultDiv.style.display = 'block';
+            
+            if (answer === 'yes') {
+                resultDiv.className = 'question-result yes-result';
+                resultIcon.textContent = wasFate ? '🎲💋' : '💋';
+                resultMessage.textContent = wasFate ? 'Fate says... Hell Yes!' : 'Hell Yes!';
+            } else {
+                resultDiv.className = 'question-result no-result';
+                resultIcon.textContent = wasFate ? '🎲😈' : '😈';
+                resultMessage.textContent = wasFate ? 'Fate says... Not Tonight!' : 'Not Tonight!';
+            }
+            
+            if (wasFate) {
+                const fateMessages = {
+                    yes: [
+                        'The universe wants you to be bold!',
+                        'Destiny has spoken... go for it!',
+                        'Fate is feeling spicy tonight!',
+                        'The stars align for adventure!'
+                    ],
+                    no: [
+                        'Maybe save this one for later...',
+                        'Fate suggests building more anticipation!',
+                        'The universe says timing is everything!',
+                        'Not tonight, but who knows what tomorrow brings!'
+                    ]
+                };
+                
+                const messages = fateMessages[answer];
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                
+                setTimeout(() => {
+                    resultMessage.textContent = randomMessage;
+                }, 1500);
+            }
+        }
+
+        async function nextTurn() {
+            if (!gameState.actionTaken) {
+                showNotification('Take an action first!');
+                return;
+            }
+            
+            // Switch players
+            gameState.currentPlayer = gameState.currentPlayer === 'Player1' ? 'Player2' : 'Player1';
+            gameState.totalTurns++;
+            
+            // Reset turn states
+            gameState.actionTaken = false;
+            gameState.questionAnswered = false;
+            
+            // Update display
+            updateDisplay();
+            showNotification(`${gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name}'s turn! Press PLAY!`);
+            
+            // Save state
+            saveGameState();
+        }
+
+        // Backend Communication
+        async function logAction(playerName, action, question = '', answer = '') {
+            try {
+                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'logGameAction',
+                            playerName: playerName,
+                            gameAction: action,
+                            question: question,
+                            answer: answer,
+                            spiceLevel: gameState.spiceLevel,
+                            excludedCategories: gameState.excludedCategories,
+                            sessionID: gameState.sessionID
+                        })
+                    });
+                }
+            } catch (error) {
+                console.log('Could not log to backend:', error);
+                // Continue without backend - app works offline
+            }
+        }
+
+        async function saveUserPreferences() {
+            try {
+                if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'saveUserPreferences',
+                            spiceLevel: gameState.spiceLevel,
+                            excludedCategories: gameState.excludedCategories,
+                            sessionID: gameState.sessionID
+                        })
+                    });
+                }
+            } catch (error) {
+                console.log('Could not save preferences to backend:', error);
+                // Continue without backend - preferences saved locally
+            }
+        }
+
+        // Local Storage Functions
+        function saveGameState() {
+            try {
+                // Only save persistent game state
+                const stateToSave = {
+                    currentPlayer: gameState.currentPlayer,
+                    totalTurns: gameState.totalTurns,
+                    player1Name: gameState.player1Name,
+                    player2Name: gameState.player2Name,
+                    spiceLevel: gameState.spiceLevel,
+                    excludedCategories: gameState.excludedCategories,
+                    sessionID: gameState.sessionID
+                };
+                localStorage.setItem('eroticDateNightGameState', JSON.stringify(stateToSave));
+            } catch (error) {
+                console.log('Could not save game state locally');
+            }
+        }
+
+        function loadGameState() {
+            try {
+                const saved = localStorage.getItem('eroticDateNightGameState');
+                const savedSettings = localStorage.getItem('eroticDateNightSettings');
+                
+                if (saved) {
+                    const parsedState = JSON.parse(saved);
+                    gameState.currentPlayer = parsedState.currentPlayer || 'Player1';
+                    gameState.totalTurns = parsedState.totalTurns || 0;
+                    gameState.player1Name = parsedState.player1Name || 'Player 1';
+                    gameState.player2Name = parsedState.player2Name || 'Player 2';
+                    gameState.spiceLevel = parsedState.spiceLevel || 2;
+                    gameState.excludedCategories = parsedState.excludedCategories || ['taboo'];
+                    gameState.sessionID = parsedState.sessionID || generateSessionID();
+                }
+                
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    gameState.spiceLevel = settings.spiceLevel || 2;
+                    gameState.excludedCategories = settings.excludedCategories || ['taboo'];
+                }
+                
+                // Always reset action states on load
+                gameState.actionTaken = false;
+                gameState.questionAnswered = false;
+                gameState.isSpinning = false;
+                
+                console.log('Game state loaded');
+                
+            } catch (error) {
+                console.log('Could not load saved data, using defaults');
+            }
+        }
+
+        // Touch and Mobile Optimizations
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Prevent context menu on long press
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Add haptic feedback for supported devices
+        function triggerHapticFeedback() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50);
+            }
+        }
+
+        // Add haptic feedback to button clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('.action-btn, .spice-level, .continue-btn, .next-turn-btn, .answer-btn, .random-choice-btn, .play-button')) {
+                triggerHapticFeedback();
+            }
+        });
+
+        // Performance monitoring
+        if ('performance' in window) {
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    const loadTime = performance.now();
+                    console.log(`App loaded in ${Math.round(loadTime)}ms`);
+                }, 0);
+            });
+        }
+
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('App error:', e.error);
+            showNotification('Something went wrong, but the app should still work!');
+        });
+
+        // Network status monitoring
+        if ('navigator' in window && 'onLine' in navigator) {
+            function updateOnlineStatus() {
+                if (!navigator.onLine) {
+                    showNotification('Offline mode - app still works locally!');
+                }
+            }
+            
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+        }
+    </script>
+</body>
+</html>

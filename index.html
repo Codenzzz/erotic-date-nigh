@@ -1,8 +1,28 @@
 </style>
 </head>
 <body>
+    <!-- Player Setup Overlay -->
+    <div class="settings-overlay" id="playerSetupOverlay">
+        <div class="settings-modal">
+            <h2 class="settings-title">Welcome to Erotic Date Nigh</h2>
+            
+            <div style="margin-bottom: 25px; text-align: center;">
+                <p style="color: var(--cream); margin-bottom: 20px;">Enter your names to get started:</p>
+                
+                <div class="player-names-setup">
+                    <input type="text" class="player-input" id="setupPlayer1Name" placeholder="Player 1 Name" maxlength="20">
+                    <input type="text" class="player-input" id="setupPlayer2Name" placeholder="Player 2 Name" maxlength="20">
+                </div>
+            </div>
+            
+            <button class="continue-btn" onclick="savePlayerNamesAndContinue()">
+                Continue to Game Settings
+            </button>
+        </div>
+    </div>
+
     <!-- Settings Overlay -->
-    <div class="settings-overlay" id="settingsOverlay">
+    <div class="settings-overlay hidden" id="settingsOverlay">
         <div class="settings-modal">
             <h2 class="settings-title">Choose Your Experience</h2>
             
@@ -135,6 +155,18 @@
                     <div class="result-message" id="resultMessage"></div>
                 </div>
             </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-title-main">Settings</h3>
+            
+            <div class="player-names-main">
+                <input type="text" class="player-input-main" id="player1Name" placeholder="Player 1 Name" maxlength="20">
+                <input type="text" class="player-input-main" id="player2Name" placeholder="Player 2 Name" maxlength="20">
+            </div>
+            
+            <button class="submit-btn" onclick="updatePlayerNames()">Update Names</button>
+            <button class="settings-btn" onclick="showSettings()" style="margin-left: 15px;">Change Game Settings</button>
         </div>
     </div>
 
@@ -271,8 +303,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadGameState();
             
-            // Show settings on first load or if no preferences saved
-            if (!localStorage.getItem('eroticDateNighSettings')) {
+            // Check if players have been set up
+            if (!gameState.player1Name || gameState.player1Name === 'Player 1' || 
+                !gameState.player2Name || gameState.player2Name === 'Player 2') {
+                showPlayerSetup();
+            } else if (!localStorage.getItem('eroticDateNighSettings')) {
                 showSettings();
             } else {
                 updateDisplay();
@@ -285,6 +320,42 @@
                 });
             }
         });
+
+        // Player Setup Functions
+        function showPlayerSetup() {
+            document.getElementById('playerSetupOverlay').classList.remove('hidden');
+        }
+
+        function savePlayerNamesAndContinue() {
+            const player1 = document.getElementById('setupPlayer1Name').value.trim();
+            const player2 = document.getElementById('setupPlayer2Name').value.trim();
+            
+            if (!player1 || !player2) {
+                showNotification('Please enter both player names!');
+                return;
+            }
+            
+            if (player1.toLowerCase() === player2.toLowerCase()) {
+                showNotification('Please use different names!');
+                return;
+            }
+            
+            gameState.player1Name = player1;
+            gameState.player2Name = player2;
+            
+            // Hide player setup
+            document.getElementById('playerSetupOverlay').classList.add('hidden');
+            
+            // Show settings if not already configured
+            if (!localStorage.getItem('eroticDateNighSettings')) {
+                showSettings();
+            } else {
+                updateDisplay();
+                showNotification(`Welcome ${player1} and ${player2}! Have fun!`);
+            }
+            
+            saveGameState();
+        }
 
         // Utility Functions
         function generateSessionID() {
@@ -389,6 +460,10 @@
             const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
             document.getElementById('currentPlayerDisplay').textContent = currentPlayerName + "'s Turn";
             document.getElementById('turnCounter').textContent = `Turn #${gameState.totalTurns + 1}`;
+            
+            // Update player name inputs in settings
+            document.getElementById('player1Name').value = gameState.player1Name;
+            document.getElementById('player2Name').value = gameState.player2Name;
             
             // Reset action state
             gameState.actionTaken = false;
@@ -784,8 +859,10 @@
             background: linear-gradient(135deg, var(--black), var(--dark-grey), var(--burgundy));
             background-attachment: fixed;
             min-height: 100vh;
+            max-height: 100vh;
             color: var(--cream);
             overflow-x: hidden;
+            overflow-y: auto;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -797,9 +874,12 @@
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
+            max-height: 100vh;
             display: flex;
             flex-direction: column;
             position: relative;
+            overflow-y: auto;
+            box-sizing: border-box;
         }
 
         /* Settings Overlay */
@@ -901,8 +981,35 @@
             transform: scale(1.05);
         }
 
-        .exclusions-section {
-            margin: 25px 0;
+        .player-names-setup {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .player-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid var(--gold);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: var(--cream);
+            font-size: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .player-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .player-input::placeholder {
+            color: rgba(245, 245, 220, 0.6);
         }
 
         .exclusions-title {

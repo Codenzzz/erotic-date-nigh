@@ -181,17 +181,21 @@
         // Configuration - REPLACE WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzmH-KMHEc1xqs6PPORu7q5Y1eeA7PfQCuLl0DmZffhhW2maSDxZq_WiEBhjGafgl9T/exec';
         
-        // Game State
+        // Game State - CLEAN VERSION
         let gameState = {
             currentPlayer: 'Player1',
             totalTurns: 0,
             player1Name: 'Player 1',
             player2Name: 'Player 2',
-            lastAction: '',
-            actionTaken: false,
-            spiceLevel: 2, // 1=Romantic, 2=Spicy, 3=Intense, 4=Extreme
+            spiceLevel: 2,
             excludedCategories: ['taboo'],
-            sessionID: generateSessionID(),
+            sessionID: generateSessionID()
+            // REMOVED: actionTaken, questionAnswered, etc. - we'll handle these locally
+        };
+
+        // LOCAL action state (not saved to storage)
+        let currentTurnState = {
+            actionTaken: false,
             questionAnswered: false,
             currentQuestion: '',
             questionAnswer: ''
@@ -469,6 +473,63 @@
             document.getElementById('questionDisplay').classList.remove('show');
             
             updateCurrentSettingsDisplay();
+        }
+
+        // Local Storage Functions - DON'T save action state
+        function saveGameState() {
+            try {
+                // Only save persistent game state, NOT current turn state
+                const stateToSave = {
+                    currentPlayer: gameState.currentPlayer,
+                    totalTurns: gameState.totalTurns,
+                    player1Name: gameState.player1Name,
+                    player2Name: gameState.player2Name,
+                    spiceLevel: gameState.spiceLevel,
+                    excludedCategories: gameState.excludedCategories,
+                    sessionID: gameState.sessionID
+                };
+                localStorage.setItem('eroticDateNighGameState', JSON.stringify(stateToSave));
+            } catch (error) {
+                console.log('Could not save game state locally');
+            }
+        }
+
+        function loadGameState() {
+            try {
+                const saved = localStorage.getItem('eroticDateNighGameState');
+                const savedSettings = localStorage.getItem('eroticDateNighSettings');
+                
+                if (saved) {
+                    const parsedState = JSON.parse(saved);
+                    // Only restore persistent state
+                    gameState.currentPlayer = parsedState.currentPlayer || 'Player1';
+                    gameState.totalTurns = parsedState.totalTurns || 0;
+                    gameState.player1Name = parsedState.player1Name || 'Player 1';
+                    gameState.player2Name = parsedState.player2Name || 'Player 2';
+                    gameState.spiceLevel = parsedState.spiceLevel || 2;
+                    gameState.excludedCategories = parsedState.excludedCategories || ['taboo'];
+                    gameState.sessionID = parsedState.sessionID || generateSessionID();
+                }
+                
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    gameState.spiceLevel = settings.spiceLevel || 2;
+                    gameState.excludedCategories = settings.excludedCategories || ['taboo'];
+                }
+                
+                // ALWAYS reset turn state on load
+                currentTurnState = {
+                    actionTaken: false,
+                    questionAnswered: false,
+                    currentQuestion: '',
+                    questionAnswer: ''
+                };
+                
+                console.log('Game state loaded, turn state reset');
+                
+            } catch (error) {
+                console.log('Could not load saved data, using defaults');
+            }
         }
 
         function getFilteredQuestion() {

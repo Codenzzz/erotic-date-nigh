@@ -111,6 +111,28 @@
                 <div style="text-align: center; margin-top: 15px;">
                     <span class="question-intensity" id="questionIntensity"></span>
                 </div>
+                
+                <div class="question-actions" id="questionActions">
+                    <div class="answer-buttons">
+                        <button class="answer-btn yes-btn" onclick="answerQuestion('yes')">
+                            <span class="answer-emoji">💋</span>
+                            <span class="answer-text">Hell Yes!</span>
+                        </button>
+                        <button class="answer-btn no-btn" onclick="answerQuestion('no')">
+                            <span class="answer-emoji">😈</span>
+                            <span class="answer-text">Not Tonight</span>
+                        </button>
+                    </div>
+                    <button class="random-choice-btn" onclick="letFateDecide()" id="fateDecideBtn">
+                        <span class="random-emoji">🔮</span>
+                        <span class="random-text">Let Fate Decide</span>
+                    </button>
+                </div>
+                
+                <div class="question-result" id="questionResult" style="display: none;">
+                    <div class="result-icon" id="resultIcon"></div>
+                    <div class="result-message" id="resultMessage"></div>
+                </div>
             </div>
 
             <button class="next-turn-btn" id="nextTurnBtn" onclick="nextTurn()" disabled>
@@ -128,7 +150,7 @@
 
     <script>
         // Configuration - REPLACE WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQx7JftcZE2u4291ElVv8_Li2v_edscxf4Ibygpyz2JzmRvU3qrCFKgvrrPKKrMX-C/exec';
+        const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
         
         // Game State
         let gameState = {
@@ -140,7 +162,10 @@
             actionTaken: false,
             spiceLevel: 2, // 1=Romantic, 2=Spicy, 3=Intense, 4=Extreme
             excludedCategories: ['taboo'],
-            sessionID: generateSessionID()
+            sessionID: generateSessionID(),
+            questionAnswered: false,
+            currentQuestion: '',
+            questionAnswer: ''
         };
 
         // Comprehensive Questions Database (organized by spice level and category)
@@ -370,6 +395,9 @@
             
             // Reset action state
             gameState.actionTaken = false;
+            gameState.questionAnswered = false;
+            gameState.currentQuestion = '';
+            gameState.questionAnswer = '';
             document.getElementById('nextTurnBtn').disabled = true;
             document.getElementById('nextTurnBtn').classList.remove('pulse');
             document.getElementById('questionDisplay').classList.remove('show');
@@ -416,24 +444,143 @@
             
             if (action === 'Question') {
                 const question = getFilteredQuestion();
+                gameState.currentQuestion = question;
                 const levels = {1: 'Romantic', 2: 'Spicy', 3: 'Intense', 4: 'Extreme'};
                 
                 document.getElementById('questionText').textContent = question;
                 document.getElementById('questionIntensity').textContent = levels[gameState.spiceLevel];
                 document.getElementById('questionDisplay').classList.add('show');
-                showNotification(`${currentPlayerName} is answering a ${levels[gameState.spiceLevel].toLowerCase()} question!`);
                 
-                // Log the specific question for backend
-                await logAction(currentPlayerName, action, question);
+                // Show the question actions
+                document.getElementById('questionActions').style.display = 'block';
+                document.getElementById('questionResult').style.display = 'none';
+                
+                showNotification(`${currentPlayerName}, will you answer this ${levels[gameState.spiceLevel].toLowerCase()} question?`);
+                
+                // Don't enable next turn until question is answered
+                document.getElementById('nextTurnBtn').disabled = true;
             } else {
                 showNotification(`${currentPlayerName} chose: ${action}`);
                 await logAction(currentPlayerName, action);
+                
+                // Enable next turn button for non-question actions
+                const nextBtn = document.getElementById('nextTurnBtn');
+                nextBtn.disabled = false;
+                nextBtn.classList.add('pulse');
+            }
+        }
+
+        async function answerQuestion(answer) {
+            if (gameState.questionAnswered) {
+                return; // Prevent double-clicking
             }
             
-            // Enable next turn button with visual feedback
+            gameState.questionAnswered = true;
+            gameState.questionAnswer = answer;
+            
+            const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
+            
+            // Hide question actions
+            document.getElementById('questionActions').style.display = 'none';
+            
+            // Show result
+            showQuestionResult(answer, false);
+            
+            // Log the answer to backend
+            await logAction(currentPlayerName, 'Question', gameState.currentQuestion, answer);
+            
+            // Enable next turn button
             const nextBtn = document.getElementById('nextTurnBtn');
             nextBtn.disabled = false;
             nextBtn.classList.add('pulse');
+            
+            // Trigger haptic feedback
+            triggerHapticFeedback();
+        }
+
+        async function letFateDecide() {
+            if (gameState.questionAnswered) {
+                return; // Prevent double-clicking
+            }
+            
+            // Add spinning animation
+            const fateBtn = document.getElementById('fateDecideBtn');
+            fateBtn.classList.add('spinning');
+            fateBtn.disabled = true;
+            
+            // Wait for animation
+            setTimeout(async () => {
+                const choices = ['yes', 'no'];
+                const fateAnswer = choices[Math.floor(Math.random() * choices.length)];
+                
+                gameState.questionAnswered = true;
+                gameState.questionAnswer = fateAnswer;
+                
+                const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
+                
+                // Hide question actions
+                document.getElementById('questionActions').style.display = 'none';
+                
+                // Show result
+                showQuestionResult(fateAnswer, true);
+                
+                // Log the answer to backend
+                await logAction(currentPlayerName, 'Question', gameState.currentQuestion, `fate-${fateAnswer}`);
+                
+                // Enable next turn button
+                const nextBtn = document.getElementById('nextTurnBtn');
+                nextBtn.disabled = false;
+                nextBtn.classList.add('pulse');
+                
+                // Remove spinning animation
+                fateBtn.classList.remove('spinning');
+                fateBtn.disabled = false;
+                
+                // Trigger haptic feedback
+                triggerHapticFeedback();
+            }, 800);
+        }
+
+        function showQuestionResult(answer, wasFate = false) {
+            const resultDiv = document.getElementById('questionResult');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultMessage = document.getElementById('resultMessage');
+            
+            resultDiv.style.display = 'block';
+            
+            if (answer === 'yes') {
+                resultDiv.className = 'question-result yes-result';
+                resultIcon.textContent = wasFate ? '🎲💋' : '💋';
+                resultMessage.textContent = wasFate ? 'Fate says... Hell Yes!' : 'Hell Yes!';
+            } else {
+                resultDiv.className = 'question-result no-result';
+                resultIcon.textContent = wasFate ? '🎲😈' : '😈';
+                resultMessage.textContent = wasFate ? 'Fate says... Not Tonight!' : 'Not Tonight!';
+            }
+            
+            if (wasFate) {
+                const fateMessages = {
+                    yes: [
+                        'The universe wants you to be bold!',
+                        'Destiny has spoken... go for it!',
+                        'Fate is feeling spicy tonight!',
+                        'The stars align for adventure!'
+                    ],
+                    no: [
+                        'Maybe save this one for later...',
+                        'Fate suggests building more anticipation!',
+                        'The universe says timing is everything!',
+                        'Not tonight, but who knows what tomorrow brings!'
+                    ]
+                };
+                
+                const messages = fateMessages[answer];
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                
+                setTimeout(() => {
+                    resultMessage.textContent = randomMessage;
+                }, 1500);
+            }
         }
 
         async function nextTurn() {
@@ -455,7 +602,7 @@
         }
 
         // Backend Communication
-        async function logAction(playerName, action, question = '') {
+        async function logAction(playerName, action, question = '', answer = '') {
             try {
                 if (SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
                     await fetch(SCRIPT_URL, {
@@ -466,6 +613,7 @@
                             playerName: playerName,
                             gameAction: action,
                             question: question,
+                            answer: answer,
                             spiceLevel: gameState.spiceLevel,
                             excludedCategories: gameState.excludedCategories,
                             sessionID: gameState.sessionID
@@ -557,7 +705,7 @@
 
         // Add haptic feedback to button clicks
         document.addEventListener('click', function(e) {
-            if (e.target.matches('.action-btn, .spice-level, .continue-btn, .next-turn-btn')) {
+            if (e.target.matches('.action-btn, .spice-level, .continue-btn, .next-turn-btn, .answer-btn, .random-choice-btn')) {
                 triggerHapticFeedback();
             }
         });
@@ -1074,6 +1222,213 @@
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        .question-actions {
+            margin-top: 25px;
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+        }
+
+        .answer-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .answer-btn {
+            flex: 1;
+            max-width: 140px;
+            background: none;
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 15px 10px;
+            color: var(--gold);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .answer-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gold);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .answer-btn:hover::before {
+            left: 0;
+        }
+
+        .answer-btn:hover {
+            color: var(--black);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .yes-btn:hover {
+            border-color: #4CAF50;
+        }
+
+        .yes-btn:hover::before {
+            background: #4CAF50;
+        }
+
+        .no-btn:hover {
+            border-color: #ff4757;
+        }
+
+        .no-btn:hover::before {
+            background: #ff4757;
+        }
+
+        .answer-emoji {
+            font-size: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .answer-text {
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .random-choice-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--burgundy), var(--deep-red));
+            border: none;
+            border-radius: 15px;
+            padding: 12px 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .random-choice-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .random-choice-btn:hover::before {
+            left: 100%;
+        }
+
+        .random-choice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4);
+        }
+
+        .random-choice-btn.spinning {
+            animation: spin 0.8s ease-in-out;
+        }
+
+        .random-emoji {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .random-choice-btn:hover .random-emoji {
+            transform: rotate(360deg);
+        }
+
+        .random-text {
+            font-size: 0.9rem;
+        }
+
+        .question-result {
+            text-align: center;
+            padding: 20px;
+            margin-top: 15px;
+            border-radius: 15px;
+            animation: resultSlide 0.6s ease-out;
+        }
+
+        .question-result.yes-result {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .question-result.no-result {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        .question-result.random-result {
+            background: rgba(186, 104, 200, 0.1);
+            border: 1px solid rgba(186, 104, 200, 0.3);
+        }
+
+        .result-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: bounce 0.6s ease-out;
+        }
+
+        .result-message {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes resultSlide {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                transform: scale(1);
+            }
+            40%, 43% {
+                transform: scale(1.1);
+            }
+            70% {
+                transform: scale(1.05);
+            }
+            90% {
+                transform: scale(1.02);
+            }
         }
 
         .next-turn-btn {

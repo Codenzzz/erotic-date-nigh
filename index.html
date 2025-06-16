@@ -103,6 +103,11 @@
                     <span class="btn-emoji">💋</span>
                     <span class="btn-text">Will You Ever...</span>
                 </button>
+                
+                <button class="action-btn fate" onclick="takeAction('Let Fate Decide')" aria-label="Let fate choose your action">
+                    <span class="btn-emoji">🔮</span>
+                    <span class="btn-text">Let Fate Decide</span>
+                </button>
             </div>
 
             <div class="question-display" id="questionDisplay">
@@ -123,10 +128,6 @@
                             <span class="answer-text">Not Tonight</span>
                         </button>
                     </div>
-                    <button class="random-choice-btn" onclick="letFateDecide()" id="fateDecideBtn">
-                        <span class="random-emoji">🔮</span>
-                        <span class="random-text">Let Fate Decide</span>
-                    </button>
                 </div>
                 
                 <div class="question-result" id="questionResult" style="display: none;">
@@ -134,10 +135,6 @@
                     <div class="result-message" id="resultMessage"></div>
                 </div>
             </div>
-
-            <button class="next-turn-btn" id="nextTurnBtn" onclick="nextTurn()" disabled>
-                Complete Action & Next Turn
-            </button>
         </div>
     </div>
 
@@ -150,7 +147,7 @@
 
     <script>
         // Configuration - REPLACE WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxXDDXS5uncZXJsnY8AbSwVjaqucVAqaQZ_rgKWGTZXePrdLebv38hTqjfIy9CwlMwG/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzmH-KMHEc1xqs6PPORu7q5Y1eeA7PfQCuLl0DmZffhhW2maSDxZq_WiEBhjGafgl9T/exec';
         
         // Game State
         let gameState = {
@@ -398,8 +395,6 @@
             gameState.questionAnswered = false;
             gameState.currentQuestion = '';
             gameState.questionAnswer = '';
-            document.getElementById('nextTurnBtn').disabled = true;
-            document.getElementById('nextTurnBtn').classList.remove('pulse');
             document.getElementById('questionDisplay').classList.remove('show');
             
             updateCurrentSettingsDisplay();
@@ -1085,8 +1080,14 @@
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
             gap: 15px;
             margin-bottom: 25px;
+        }
+
+        .action-btn.fate {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #8a2be2, #4b0082);
         }
 
         .action-btn {

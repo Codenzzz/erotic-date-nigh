@@ -394,12 +394,22 @@
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
             margin-bottom: 30px;
             position: relative;
             overflow: hidden;
+            padding: 10px;
+        }
+
+        .play-button-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: -5px;
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 0.5px;
         }
 
         .play-button::before {
@@ -432,7 +442,7 @@
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
             gap: 15px;
             margin-bottom: 25px;
             opacity: 1;
@@ -461,11 +471,6 @@
             position: relative;
             overflow: hidden;
             transform: scale(1);
-        }
-
-        .action-btn.fate {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, #8a2be2, #4b0082);
         }
 
         .action-btn.highlighted {
@@ -781,57 +786,6 @@
             color: var(--cream);
         }
 
-        .next-turn-btn {
-            background: linear-gradient(135deg, var(--deep-red), var(--burgundy));
-            border: none;
-            border-radius: 15px;
-            padding: 15px 30px;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: auto;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-            display: none;
-        }
-
-        .next-turn-btn.show {
-            display: block;
-        }
-
-        .next-turn-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .next-turn-btn:hover::before {
-            left: 100%;
-        }
-
-        .next-turn-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4);
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4); }
-            50% { box-shadow: 0 8px 30px rgba(139, 0, 0, 0.8); }
-            100% { box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4); }
-        }
-
         .notification {
             position: fixed;
             top: 20px;
@@ -886,6 +840,41 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* Auto-advance countdown overlay */
+        .auto-advance-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            z-index: 998;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .auto-advance-overlay.show {
+            display: block;
+        }
+
+        .countdown-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            animation: pulse 1s ease-out infinite;
+        }
+
+        .countdown-text {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: var(--cream);
         }
 
         /* Animations */
@@ -944,6 +933,12 @@
             90% {
                 transform: scale(1.02);
             }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         /* Settings Section */
@@ -1053,6 +1048,10 @@
                 height: 100px;
                 font-size: 2.5rem;
             }
+
+            .play-button-text {
+                font-size: 0.8rem;
+            }
         }
 
         @media (max-width: 360px) {
@@ -1077,10 +1076,14 @@
                 height: 90px;
                 font-size: 2rem;
             }
+
+            .play-button-text {
+                font-size: 0.7rem;
+            }
         }
 
         /* Performance optimizations */
-        .action-btn, .spice-level, .continue-btn, .next-turn-btn, .play-button {
+        .action-btn, .spice-level, .continue-btn, .play-button {
             will-change: transform;
         }
 
@@ -1207,7 +1210,8 @@
             <!-- Spinning Wheel Section -->
             <div class="wheel-container">
                 <button class="play-button" id="playButton" onclick="startSpinning()">
-                    🎮
+                    <span>🎲</span>
+                    <span class="play-button-text">Let's Play</span>
                 </button>
                 
                 <div class="action-buttons" id="actionButtons">
@@ -1229,11 +1233,6 @@
                     <button class="action-btn question" data-action="Question" aria-label="Answer a spicy question">
                         <span class="btn-emoji">💋</span>
                         <span class="btn-text">Will You Ever...</span>
-                    </button>
-                    
-                    <button class="action-btn fate" data-action="Let Fate Decide" aria-label="Let fate choose your action">
-                        <span class="btn-emoji">🔮</span>
-                        <span class="btn-text">Let Fate Decide</span>
                     </button>
                 </div>
             </div>
@@ -1268,10 +1267,6 @@
                     <div class="result-message" id="resultMessage"></div>
                 </div>
             </div>
-
-            <button class="next-turn-btn" id="nextTurnBtn" onclick="nextTurn()">
-                Next Player
-            </button>
         </div>
 
         <div class="settings-section">
@@ -1285,6 +1280,12 @@
             <button class="submit-btn" onclick="updatePlayerNames()">Update Names</button>
             <button class="settings-btn" onclick="showSettings()" style="margin-left: 15px;">Change Game Settings</button>
         </div>
+    </div>
+
+    <!-- Auto-advance countdown overlay -->
+    <div class="auto-advance-overlay" id="autoAdvanceOverlay">
+        <div class="countdown-number" id="countdownNumber">3</div>
+        <div class="countdown-text">Next player in...</div>
     </div>
 
     <div class="loading" id="loading">
@@ -1565,9 +1566,9 @@
                 showNotification(`${currentPlayerName} must: ${action}`);
                 logAction(currentPlayerName, action);
                 
-                // Show next turn button after a delay
+                // Start auto-advance countdown after a delay
                 setTimeout(() => {
-                    showNextTurnButton();
+                    startAutoAdvanceCountdown();
                 }, 1500);
             }
             
@@ -1594,9 +1595,25 @@
             });
         }
 
-        function showNextTurnButton() {
-            const nextBtn = document.getElementById('nextTurnBtn');
-            nextBtn.classList.add('show', 'pulse');
+        function startAutoAdvanceCountdown() {
+            const overlay = document.getElementById('autoAdvanceOverlay');
+            const countdownNumber = document.getElementById('countdownNumber');
+            
+            overlay.classList.add('show');
+            let countdown = 3;
+            countdownNumber.textContent = countdown;
+            
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    countdownNumber.textContent = countdown;
+                    triggerHapticFeedback();
+                } else {
+                    clearInterval(countdownInterval);
+                    overlay.classList.remove('show');
+                    nextTurn();
+                }
+            }, 1000);
         }
 
         // Player Setup Functions
@@ -1629,7 +1646,7 @@
                 showSettings();
             } else {
                 updateDisplay();
-                showNotification(`Welcome ${player1} and ${player2}! Press PLAY to start!`);
+                showNotification(`Welcome ${player1} and ${player2}! Press Let's Play to start!`);
             }
             
             saveGameState();
@@ -1720,7 +1737,7 @@
             updateCurrentSettingsDisplay();
             updateDisplay();
             
-            showNotification('Settings saved! Press PLAY to begin your adventure!');
+            showNotification('Settings saved! Press Let\'s Play to begin your adventure!');
         }
 
         function updateCurrentSettingsDisplay() {
@@ -1745,7 +1762,6 @@
             
             // Hide any open question displays
             document.getElementById('questionDisplay').classList.remove('show');
-            document.getElementById('nextTurnBtn').classList.remove('show', 'pulse');
             
             updateCurrentSettingsDisplay();
             
@@ -1820,9 +1836,9 @@
             // Log the answer to backend
             await logAction(currentPlayerName, 'Question', gameState.currentQuestion, answer);
             
-            // Show next turn button after delay
+            // Start auto-advance countdown after delay
             setTimeout(() => {
-                showNextTurnButton();
+                startAutoAdvanceCountdown();
             }, 2000);
             
             // Trigger haptic feedback
@@ -1858,9 +1874,9 @@
                 // Log the answer to backend
                 await logAction(currentPlayerName, 'Question', gameState.currentQuestion, `fate-${fateAnswer}`);
                 
-                // Show next turn button after delay
+                // Start auto-advance countdown after delay
                 setTimeout(() => {
-                    showNextTurnButton();
+                    startAutoAdvanceCountdown();
                 }, 2000);
                 
                 // Remove spinning animation
@@ -1930,7 +1946,7 @@
             
             // Update display
             updateDisplay();
-            showNotification(`${gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name}'s turn! Press PLAY!`);
+            showNotification(`${gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name}'s turn! Press Let's Play!`);
             
             // Save state
             saveGameState();
@@ -2058,7 +2074,7 @@
 
         // Add haptic feedback to button clicks
         document.addEventListener('click', function(e) {
-            if (e.target.matches('.action-btn, .spice-level, .continue-btn, .next-turn-btn, .answer-btn, .random-choice-btn, .play-button')) {
+            if (e.target.matches('.action-btn, .spice-level, .continue-btn, .answer-btn, .random-choice-btn, .play-button')) {
                 triggerHapticFeedback();
             }
         });

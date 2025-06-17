@@ -62,7 +62,7 @@
         .container {
             max-width: 420px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
             min-height: 100vh;
             max-height: 100vh;
             display: flex;
@@ -88,6 +88,7 @@
             justify-content: center;
             padding: 20px;
             animation: fadeIn 0.3s ease-out;
+            transition: opacity 0.3s ease-out;
         }
 
         .settings-overlay.hidden {
@@ -95,45 +96,47 @@
         }
 
         .settings-modal {
-            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(42, 42, 42, 0.95));
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 25px;
-            padding: 20px;
-            max-width: 380px;
+            padding: 30px;
+            max-width: 400px;
             width: 95%;
             max-height: 85vh;
             overflow-y: auto;
             border: 2px solid var(--gold);
-            box-shadow: var(--shadow-deep);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3), 0 10px 30px rgba(0,0,0,0.8);
             animation: slideUp 0.5s ease-out;
         }
 
         .settings-title {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             color: var(--gold);
             text-align: center;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.3), 0 2px 4px rgba(0,0,0,0.8);
+            font-weight: 400;
         }
 
         .spice-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
 
         .spice-level {
-            border: 2px solid transparent;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(212, 175, 55, 0.3);
             border-radius: 15px;
-            padding: 12px;
-            color: white;
-            font-weight: 600;
+            padding: 15px;
+            color: var(--cream);
+            font-weight: 400;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             position: relative;
             overflow: hidden;
         }
@@ -145,7 +148,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
             transition: left 0.5s ease;
         }
 
@@ -153,25 +156,15 @@
             left: 100%;
         }
 
-        .spice-level.romantic {
-            background: linear-gradient(135deg, #4a90e2, #7b68ee);
-        }
-
-        .spice-level.spicy {
-            background: linear-gradient(135deg, #ff6b9d, #ff8a80);
-        }
-
-        .spice-level.intense {
-            background: linear-gradient(135deg, #ff4757, #c44569);
-        }
-
-        .spice-level.extreme {
-            background: linear-gradient(135deg, var(--deep-red), #000);
+        .spice-level:hover {
+            border-color: var(--gold);
+            transform: translateY(-2px);
         }
 
         .spice-level.selected {
             border-color: var(--gold);
-            box-shadow: var(--shadow-gold);
+            background: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
             transform: scale(1.05);
         }
 
@@ -185,9 +178,9 @@
         .player-input {
             width: 100%;
             padding: 15px 20px;
-            border: 1px solid var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.5);
             border-radius: 16px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(10px);
             color: var(--cream);
             font-size: 1rem;
@@ -199,7 +192,7 @@
             outline: none;
             border-color: var(--gold);
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.8);
         }
 
         .player-input::placeholder {
@@ -207,11 +200,13 @@
         }
 
         .exclusions-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: var(--gold);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
             font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
         }
 
         .exclusion-item {
@@ -220,14 +215,16 @@
             gap: 12px;
             margin-bottom: 12px;
             padding: 12px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 10px;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .exclusion-item:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.4);
         }
 
         .exclusion-checkbox {
@@ -247,8 +244,8 @@
             background: linear-gradient(135deg, var(--gold), #f4e4bc);
             color: var(--black);
             border: none;
-            border-radius: 15px;
-            padding: 15px 30px;
+            border-radius: 20px;
+            padding: 18px 35px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
@@ -256,6 +253,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
         }
 
         .continue-btn::before {
@@ -275,100 +273,94 @@
 
         .continue-btn:hover {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-gold);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4e4bc, var(--gold));
         }
 
         /* Main App Styles */
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             animation: fadeInDown 1s ease-out;
+            position: relative;
+            z-index: 2;
         }
 
         .title {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-size: 3.2rem;
+            font-weight: 400;
+            margin-bottom: 5px;
             color: var(--gold);
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-            letter-spacing: 1px;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 3px;
         }
 
         .subtitle {
-            font-size: 1rem;
-            color: var(--cream);
-            opacity: 0.8;
+            font-size: 1.1rem;
+            color: rgba(245, 245, 220, 0.8);
+            opacity: 1;
             font-style: italic;
+            font-weight: 300;
+            margin-bottom: 5px;
         }
 
         .current-settings {
-            background: var(--transparent-gold);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 15px;
-            padding: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--gold);
+            border-radius: 30px;
+            padding: 18px 30px;
             text-align: center;
-            margin-bottom: 25px;
-            font-size: 0.9rem;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
         }
 
+        /* Main golden button styling */
         .settings-btn {
-            background: none;
-            border: 1px solid var(--gold);
+            background: transparent;
+            border: 2px solid var(--gold);
             color: var(--gold);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
             cursor: pointer;
-            margin-left: 10px;
+            margin-left: 15px;
             transition: all 0.3s ease;
+            font-weight: 400;
         }
 
         .settings-btn:hover {
-            background: var(--gold);
-            color: var(--black);
+            background: rgba(212, 175, 55, 0.1);
+            border-color: #f4e4bc;
+            color: #f4e4bc;
             transform: translateY(-1px);
         }
 
         .player-turn {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 20px 35px;
             text-align: center;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 25px;
+            border: 2px solid var(--gold);
             position: relative;
-            overflow: hidden;
-        }
-
-        .player-turn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
         }
 
         .current-player {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
-            font-weight: 600;
+            font-size: 2rem;
+            font-weight: 400;
             margin-bottom: 5px;
             color: var(--gold);
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
         .turn-counter {
-            font-size: 0.9rem;
-            opacity: 0.7;
+            font-size: 1rem;
+            opacity: 0.8;
+            color: rgba(245, 245, 220, 0.8);
         }
 
         .game-area {
@@ -383,28 +375,36 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .play-button {
-            background: linear-gradient(135deg, var(--gold), #f4e4bc);
-            color: var(--black);
-            border: 3px solid rgba(212, 175, 55, 0.3);
+            background: linear-gradient(135deg, #d4af37, #f4e4bc);
+            color: #000;
+            border: none;
             border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            font-size: 3rem;
+            width: 140px;
+            height: 140px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4), inset 0 -3px 5px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.8), inset 0 0 20px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
             position: relative;
             overflow: hidden;
-            padding: 10px;
+        }
+
+        .play-button::after {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000"><path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5zm2 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm5 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm5 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zM7 11a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm5 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm5 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zM7 16a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm5 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm5 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .play-button-text {
@@ -437,12 +437,18 @@
         }
 
         .play-button:not(:disabled) {
-            animation: diceGlow 2s ease-in-out infinite;
+            animation: pulseGlow 2s ease-in-out infinite;
         }
 
-        @keyframes diceGlow {
-            0%, 100% { box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); }
-            50% { box-shadow: 0 12px 35px rgba(212, 175, 55, 0.7); }
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 50px rgba(212, 175, 55, 0.8), inset 0 0 20px rgba(0,0,0,0.2);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 70px rgba(212, 175, 55, 1), 0 0 100px rgba(212, 175, 55, 0.5), inset 0 0 20px rgba(0,0,0,0.2);
+                transform: scale(1.05);
+            }
         }
 
         .play-button:disabled {
@@ -461,6 +467,9 @@
             margin-bottom: 25px;
             opacity: 1;
             transition: all 0.3s ease;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .action-buttons.spinning {
@@ -555,18 +564,39 @@
             color: var(--black);
         }
 
-        .btn-emoji {
-            font-size: 2.5rem;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)) brightness(1.1) saturate(1.3);
+        .btn-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto;
+            filter: brightness(1.2) drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .btn-icon.clothing {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d4af37"><path d="M6.5 2c-.1 0-.2 0-.3.1C5.9 2.3 5 3.2 5 4.5V7l1.1 2.2c.2.5.4 1 .4 1.6v8.7c0 1.4 1.1 2.5 2.5 2.5h6c1.4 0 2.5-1.1 2.5-2.5v-8.7c0-.6.2-1.1.4-1.6L19 7V4.5c0-1.3-.9-2.2-1.2-2.4-.1-.1-.2-.1-.3-.1h-2c-1.2 0-2.2.5-3 1-.8-.5-1.8-1-3-1h-2zm0 2h2c.8 0 1.5.3 2 .6V9l-2 2-2-2V4.6c0-.1 0-.2 0-.3V4zm7 0h2v.3c0 .1 0 .2 0 .3V9l-2 2-2-2V4.6c.5-.3 1.2-.6 2-.6z"/></svg>');
+        }
+
+        .btn-icon.sip {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d4af37"><path d="M5 2v6c0 4.97 3.58 9 8 9s8-4.03 8-9V2H5zm14 2v4c0 3.87-2.73 7-6 7s-6-3.13-6-7V4h12zM7 4v4c0 2.76 2.24 5 5 5s5-2.24 5-5V4H7zm-2 16h14v2H5z"/></svg>');
+        }
+
+        .btn-icon.shot {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d4af37"><path d="M8 2v5l4 4v10h2V11l4-4V2H8zm2 2h6v1.5L12 10 8 5.5V4z"/></svg>');
+        }
+
+        .btn-icon.question {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d4af37"><path d="M11.07 12.85c.77-1.39 2.25-2.21 3.11-3.44.91-1.29.4-3.7-2.18-3.7-1.69 0-2.52 1.28-2.87 2.34L6.54 6.96C7.25 4.83 9.18 3 11.99 3c2.35 0 3.96 1.07 4.78 2.41.7 1.15 1.11 3.3.03 4.9-1.2 1.77-2.35 2.31-2.97 3.45-.25.46-.35.76-.35 2.24h-2.89c-.01-.78-.13-2.05.48-3.15zM14 20c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/></svg>');
         }
 
         .btn-text {
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             text-align: center;
             line-height: 1.2;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-            color: var(--black);
-            font-weight: 700;
+            color: var(--cream);
+            font-weight: 300;
+            font-family: 'Source Sans Pro', sans-serif;
         }
 
         /* Question Modal Overlay */
@@ -1000,63 +1030,9 @@
             100% { transform: scale(1); }
         }
 
-        /* Settings Section */
+        /* Settings Section - Hidden by default */
         .settings-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .settings-title-main {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
-            color: var(--gold);
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .player-names-main {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .player-input-main {
-            flex: 1;
-            padding: 10px 15px;
-            border: 1px solid var(--gold);
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--cream);
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        .player-input-main:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-        }
-
-        .player-input-main::placeholder {
-            color: rgba(245, 245, 220, 0.6);
-        }
-
-        .submit-btn {
-            background: var(--gold);
-            color: var(--black);
-            border: none;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            background: #f4e4bc;
-            transform: translateY(-1px);
+            display: none;
         }
 
         /* Responsive Design */
@@ -1103,13 +1079,17 @@
             }
 
             .play-button {
-                width: 100px;
-                height: 100px;
-                font-size: 2.5rem;
+                width: 120px;
+                height: 120px;
             }
 
-            .play-button-text {
-                font-size: 0.8rem;
+            .play-button::after {
+                font-size: 3.5rem;
+            }
+
+            .play-icon {
+                width: 60px;
+                height: 60px;
             }
 
             .question-display {
@@ -1139,11 +1119,11 @@
             .play-button {
                 width: 90px;
                 height: 90px;
-                font-size: 2rem;
             }
 
-            .play-button-text {
-                font-size: 0.7rem;
+            .play-icon {
+                width: 50px;
+                height: 50px;
             }
 
             .question-display {
@@ -1187,8 +1167,8 @@
         <div class="settings-modal">
             <h2 class="settings-title">Welcome to Erotic Date Night</h2>
             
-            <div style="margin-bottom: 25px; text-align: center;">
-                <p style="color: var(--cream); margin-bottom: 20px;">Enter your names to get started:</p>
+            <div style="margin-bottom: 30px; text-align: center;">
+                <p style="color: var(--cream); margin-bottom: 25px; font-size: 1.1rem;">Enter your names to get started:</p>
                 
                 <div class="player-names-setup">
                     <input type="text" class="player-input" id="setupPlayer1Name" placeholder="Player 1 Name" maxlength="20">
@@ -1208,20 +1188,20 @@
             <h2 class="settings-title">Choose Your Experience</h2>
             
             <div class="spice-selector">
-                <div class="spice-level romantic" data-level="1" onclick="selectSpiceLevel(1)">
-                    <div>😊 Romantic</div>
+                <div class="spice-level" data-level="1" onclick="selectSpiceLevel(1)">
+                    <div style="font-size: 1.2rem;">😊 Romantic</div>
                     <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Sensual & Sweet</div>
                 </div>
-                <div class="spice-level spicy selected" data-level="2" onclick="selectSpiceLevel(2)">
-                    <div>🔥 Spicy</div>
+                <div class="spice-level selected" data-level="2" onclick="selectSpiceLevel(2)">
+                    <div style="font-size: 1.2rem;">🔥 Spicy</div>
                     <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Passionate & Bold</div>
                 </div>
-                <div class="spice-level intense" data-level="3" onclick="selectSpiceLevel(3)">
-                    <div>🌶️ Intense</div>
+                <div class="spice-level" data-level="3" onclick="selectSpiceLevel(3)">
+                    <div style="font-size: 1.2rem;">🌶️ Intense</div>
                     <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">Kinky & Explicit</div>
                 </div>
-                <div class="spice-level extreme" data-level="4" onclick="selectSpiceLevel(4)">
-                    <div>🔥🔥 Extreme</div>
+                <div class="spice-level" data-level="4" onclick="selectSpiceLevel(4)">
+                    <div style="font-size: 1.2rem;">🔥🔥 Extreme</div>
                     <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.8;">No Limits</div>
                 </div>
             </div>
@@ -1286,29 +1266,26 @@
         <div class="game-area">
             <!-- Spinning Wheel Section -->
             <div class="wheel-container">
-                <button class="play-button" id="playButton" onclick="startSpinning()">
-                    <span style="font-size: 3.5rem; filter: brightness(1.2) saturate(1.5);">🎲</span>
-                    <span class="play-button-text">Let's Play</span>
-                </button>
+                <button class="play-button" id="playButton" onclick="startSpinning()"></button>
                 
                 <div class="action-buttons" id="actionButtons">
-                    <button class="action-btn clothing" data-action="Remove Clothing" aria-label="Remove piece of clothing">
-                        <span class="btn-emoji">👙</span>
+                    <button class="action-btn" data-action="Remove Clothing" aria-label="Remove piece of clothing">
+                        <div class="btn-icon clothing"></div>
                         <span class="btn-text">Remove Clothing</span>
                     </button>
                     
-                    <button class="action-btn drink" data-action="Take a Sip" aria-label="Take a sip of drink">
-                        <span class="btn-emoji">🥂</span>
+                    <button class="action-btn" data-action="Take a Sip" aria-label="Take a sip of drink">
+                        <div class="btn-icon sip"></div>
                         <span class="btn-text">Take a Sip</span>
                     </button>
                     
-                    <button class="action-btn shot" data-action="Take a Shot" aria-label="Take a shot">
-                        <span class="btn-emoji">🥃</span>
+                    <button class="action-btn" data-action="Take a Shot" aria-label="Take a shot">
+                        <div class="btn-icon shot"></div>
                         <span class="btn-text">Take a Shot</span>
                     </button>
                     
-                    <button class="action-btn question" data-action="Question" aria-label="Answer a spicy question">
-                        <span class="btn-emoji">❓</span>
+                    <button class="action-btn" data-action="Question" aria-label="Answer a spicy question">
+                        <div class="btn-icon question"></div>
                         <span class="btn-text">Will You Ever...</span>
                     </button>
                 </div>
@@ -1613,7 +1590,7 @@
             // Take a Shot: 1 in 10 chance (10%)
             // Take a Sip: 1 in 5 chance (20%)
             // Will You Ever: 1 in 2 chance (50%)
-            // Note: These don't sum to 100%, so they're normalized below
+            // Note: These probabilities are normalized to sum to 100%
             
             const weights = {
                 'Remove Clothing': 0.125,  // 1/8
@@ -1765,18 +1742,23 @@
             gameState.player1Name = player1;
             gameState.player2Name = player2;
             
-            // Hide player setup
-            document.getElementById('playerSetupOverlay').classList.add('hidden');
+            // Hide player setup with a small delay for transition
+            document.getElementById('playerSetupOverlay').style.opacity = '0';
             
-            // Show settings if not already configured
-            if (!localStorage.getItem('eroticDateNightSettings')) {
-                setTimeout(() => {
-                    showSettings();
-                }, 100);
-            } else {
-                updateDisplay();
-                showNotification(`Welcome ${player1} and ${player2}! Press Let's Play to spin the dice!`);
-            }
+            setTimeout(() => {
+                document.getElementById('playerSetupOverlay').classList.add('hidden');
+                document.getElementById('playerSetupOverlay').style.opacity = '1';
+                
+                // Show settings if not already configured
+                if (!localStorage.getItem('eroticDateNightSettings')) {
+                    setTimeout(() => {
+                        showSettings();
+                    }, 200);
+                } else {
+                    updateDisplay();
+                    showNotification(`Welcome ${player1} and ${player2}! Roll the golden dice to play!`);
+                }
+            }, 300);
             
             saveGameState();
         }
@@ -1820,9 +1802,13 @@
             setTimeout(() => {
                 const checkbox = labelElement.querySelector('.exclusion-checkbox');
                 if (checkbox) {
-                    labelElement.style.background = checkbox.checked ? 
-                        'rgba(255, 255, 255, 0.15)' : 
-                        'rgba(255, 255, 255, 0.05)';
+                    if (checkbox.checked) {
+                        labelElement.style.background = 'rgba(212, 175, 55, 0.15)';
+                        labelElement.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+                    } else {
+                        labelElement.style.background = 'rgba(0, 0, 0, 0.5)';
+                        labelElement.style.borderColor = 'rgba(212, 175, 55, 0.2)';
+                    }
                 }
             }, 10);
         }
@@ -1838,7 +1824,11 @@
                 const checkbox = document.querySelector(`[data-category="${category}"]`);
                 if (checkbox) {
                     checkbox.checked = true;
-                    checkbox.closest('.exclusion-item').style.background = 'rgba(255, 255, 255, 0.15)';
+                    const labelElement = checkbox.closest('.exclusion-item');
+                    if (labelElement) {
+                        labelElement.style.background = 'rgba(212, 175, 55, 0.15)';
+                        labelElement.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+                    }
                 }
             });
         }
@@ -1884,10 +1874,6 @@
             const currentPlayerName = gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name;
             document.getElementById('currentPlayerDisplay').textContent = currentPlayerName + "'s Turn";
             document.getElementById('turnCounter').textContent = `Turn #${gameState.totalTurns + 1}`;
-            
-            // Update player name inputs in settings
-            document.getElementById('player1Name').value = gameState.player1Name;
-            document.getElementById('player2Name').value = gameState.player2Name;
             
             // Hide any open question displays
             document.getElementById('questionOverlay').classList.remove('show');
@@ -2087,7 +2073,7 @@
             
             // Update display
             updateDisplay();
-            showNotification(`${gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name}'s turn! Press Let's Play to spin!`);
+            showNotification(`${gameState.currentPlayer === 'Player1' ? gameState.player1Name : gameState.player2Name}'s turn! Roll the dice!`);
             
             // Save state
             saveGameState();
@@ -2215,7 +2201,7 @@
 
         // Add haptic feedback to button clicks
         document.addEventListener('click', function(e) {
-            if (e.target.matches('.action-btn, .spice-level, .continue-btn, .answer-btn, .random-choice-btn, .play-button')) {
+            if (e.target.matches('.action-btn, .spice-level, .continue-btn, .answer-btn, .random-choice-btn, .play-button, .settings-btn')) {
                 triggerHapticFeedback();
             }
         });

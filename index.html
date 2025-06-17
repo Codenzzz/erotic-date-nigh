@@ -45,7 +45,8 @@
 
         body {
             font-family: 'Source Sans Pro', sans-serif;
-            background: linear-gradient(135deg, var(--black), var(--dark-grey), var(--burgundy));
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.85), rgba(26, 26, 26, 0.85), rgba(114, 47, 55, 0.85)), 
+                        url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCADIAMgDASIAAhEBAxEB/8QAGwAAAQUBAQAAAAAAAAAAAAAABQABAwQGAgf/xAA5EAABAwMCBAQDBgYCAwEAAAABAAIDBAUREiEGMUFREyJhcTKBkQcUQqGxwRUjUmLR4XLwM4Lx8v/EABcBAQEBAQAAAAAAAAAAAAAAAAABAgP/xAAYEQEBAQEBAAAAAAAAAAAAAAAAARECEv/aAAwDAQACEQMRAD8A') center/cover;
             background-attachment: fixed;
             min-height: 100vh;
             max-height: 100vh;
@@ -69,6 +70,7 @@
             position: relative;
             overflow-y: auto;
             box-sizing: border-box;
+            z-index: 2;
         }
 
         /* Settings Overlay */
@@ -93,7 +95,8 @@
         }
 
         .settings-modal {
-            background: linear-gradient(135deg, var(--dark-grey), var(--medium-grey));
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(42, 42, 42, 0.95));
+            backdrop-filter: blur(10px);
             border-radius: 25px;
             padding: 20px;
             max-width: 380px;
@@ -386,7 +389,7 @@
         .play-button {
             background: linear-gradient(135deg, var(--gold), #f4e4bc);
             color: var(--black);
-            border: none;
+            border: 3px solid rgba(212, 175, 55, 0.3);
             border-radius: 50%;
             width: 120px;
             height: 120px;
@@ -397,7 +400,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4), inset 0 -3px 5px rgba(0,0,0,0.2);
             margin-bottom: 30px;
             position: relative;
             overflow: hidden;
@@ -410,6 +413,7 @@
             margin-top: -5px;
             font-family: 'Cormorant Garamond', serif;
             letter-spacing: 0.5px;
+            color: var(--black);
         }
 
         .play-button::before {
@@ -552,15 +556,17 @@
         }
 
         .btn-emoji {
-            font-size: 2rem;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            font-size: 2.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)) brightness(1.1) saturate(1.3);
         }
 
         .btn-text {
             font-size: 0.9rem;
             text-align: center;
             line-height: 1.2;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            color: var(--black);
+            font-weight: 700;
         }
 
         /* Question Modal Overlay */
@@ -588,12 +594,12 @@
             transform: translate(-50%, -50%);
             width: 90%;
             max-width: 400px;
-            background: rgba(26, 26, 26, 0.95);
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.98), rgba(42, 42, 42, 0.98));
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 30px 25px;
             border: 2px solid var(--gold);
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.5), 0 10px 30px rgba(0,0,0,0.8);
             display: none;
             animation: questionPop 0.5s ease-out;
             z-index: 997;
@@ -849,7 +855,7 @@
             color: white;
             padding: 15px 25px;
             border-radius: 15px;
-            z-index: 999;
+            z-index: 1050;
             display: none;
             border: 1px solid var(--gold);
             box-shadow: var(--shadow-deep);
@@ -907,7 +913,7 @@
             border-radius: 20px;
             padding: 30px;
             text-align: center;
-            z-index: 998;
+            z-index: 999;
             display: none;
             animation: fadeIn 0.3s ease-out;
         }
@@ -1281,13 +1287,13 @@
             <!-- Spinning Wheel Section -->
             <div class="wheel-container">
                 <button class="play-button" id="playButton" onclick="startSpinning()">
-                    <span>🎲</span>
+                    <span style="font-size: 3.5rem; filter: brightness(1.2) saturate(1.5);">🎲</span>
                     <span class="play-button-text">Let's Play</span>
                 </button>
                 
                 <div class="action-buttons" id="actionButtons">
                     <button class="action-btn clothing" data-action="Remove Clothing" aria-label="Remove piece of clothing">
-                        <span class="btn-emoji">🔥</span>
+                        <span class="btn-emoji">👙</span>
                         <span class="btn-text">Remove Clothing</span>
                     </button>
                     
@@ -1297,12 +1303,12 @@
                     </button>
                     
                     <button class="action-btn shot" data-action="Take a Shot" aria-label="Take a shot">
-                        <span class="btn-emoji">🍸</span>
+                        <span class="btn-emoji">🥃</span>
                         <span class="btn-text">Take a Shot</span>
                     </button>
                     
                     <button class="action-btn question" data-action="Question" aria-label="Answer a spicy question">
-                        <span class="btn-emoji">💋</span>
+                        <span class="btn-emoji">❓</span>
                         <span class="btn-text">Will You Ever...</span>
                     </button>
                 </div>
@@ -1714,6 +1720,7 @@
         }
 
         function startAutoAdvanceCountdown() {
+            console.log('Starting auto-advance countdown');
             const overlay = document.getElementById('autoAdvanceOverlay');
             const countdownNumber = document.getElementById('countdownNumber');
             
@@ -1723,12 +1730,14 @@
             
             const countdownInterval = setInterval(() => {
                 countdown--;
+                console.log('Countdown:', countdown);
                 if (countdown > 0) {
                     countdownNumber.textContent = countdown;
                     triggerHapticFeedback();
                 } else {
                     clearInterval(countdownInterval);
                     overlay.classList.remove('show');
+                    console.log('Advancing to next turn');
                     nextTurn();
                 }
             }, 1000);
@@ -1761,7 +1770,9 @@
             
             // Show settings if not already configured
             if (!localStorage.getItem('eroticDateNightSettings')) {
-                showSettings();
+                setTimeout(() => {
+                    showSettings();
+                }, 100);
             } else {
                 updateDisplay();
                 showNotification(`Welcome ${player1} and ${player2}! Press Let's Play to spin the dice!`);
@@ -1957,7 +1968,14 @@
             
             // Start auto-advance countdown after delay
             setTimeout(() => {
-                startAutoAdvanceCountdown();
+                // Close question display first
+                document.getElementById('questionOverlay').classList.remove('show');
+                document.getElementById('questionDisplay').classList.remove('show');
+                
+                // Then start countdown
+                setTimeout(() => {
+                    startAutoAdvanceCountdown();
+                }, 300);
             }, 2000);
             
             // Trigger haptic feedback
@@ -1995,7 +2013,14 @@
                 
                 // Start auto-advance countdown after delay
                 setTimeout(() => {
-                    startAutoAdvanceCountdown();
+                    // Close question display first
+                    document.getElementById('questionOverlay').classList.remove('show');
+                    document.getElementById('questionDisplay').classList.remove('show');
+                    
+                    // Then start countdown
+                    setTimeout(() => {
+                        startAutoAdvanceCountdown();
+                    }, 300);
                 }, 2000);
                 
                 // Remove spinning animation
@@ -2050,11 +2075,6 @@
         }
 
         async function nextTurn() {
-            if (!gameState.actionTaken) {
-                showNotification('Take an action first!');
-                return;
-            }
-            
             // Switch players
             gameState.currentPlayer = gameState.currentPlayer === 'Player1' ? 'Player2' : 'Player1';
             gameState.totalTurns++;
@@ -2062,6 +2082,8 @@
             // Reset turn states
             gameState.actionTaken = false;
             gameState.questionAnswered = false;
+            gameState.currentQuestion = null;
+            gameState.questionAnswer = null;
             
             // Update display
             updateDisplay();
@@ -2211,7 +2233,11 @@
         // Error handling
         window.addEventListener('error', function(e) {
             console.error('App error:', e.error);
-            showNotification('Something went wrong, but the app should still work!');
+            // Only show error notification for actual errors, not navigation
+            if (e.error && !e.error.message?.includes('ResizeObserver')) {
+                // Silently log errors without showing notification
+                console.log('Error logged:', e.error);
+            }
         });
 
         // Network status monitoring
